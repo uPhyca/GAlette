@@ -1,0 +1,10 @@
+include 'library'
+project(':library').name = 'galette'
+
+include 'tests'
+project(':tests').name = 'tests'
+
+include 'example'
+project(':example').name = 'example'
+
+project(':').name = 'android-galette-parent'

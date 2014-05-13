@@ -1,0 +1,28 @@
+project.ext {
+    supportVersion = '19.1.+'
+    playServicesVersion = '4.3.+'
+    aspectjVersion = '1.7.4'
+}
+
+allprojects {
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
+
+    dependencies {
+        repositories {
+            mavenCentral()
+        }
+    }
+
+//    group = GROUP
+//    version = VERSION_NAME
+
+    apply plugin: 'maven'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.10'
+}

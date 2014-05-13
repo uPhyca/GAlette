@@ -1,0 +1,96 @@
+import com.android.build.gradle.LibraryPlugin
+import org.aspectj.bridge.IMessage
+import org.aspectj.bridge.MessageHandler
+import org.aspectj.tools.ajc.Main
+
+buildscript {
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'org.aspectj:aspectjtools:1.7.4'
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'
+    }
+}
+
+apply plugin: 'android-library'
+
+sourceSets {
+    main { compileClasspath += configurations.provided }
+}
+
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.3"
+
+    defaultConfig {
+        targetSdkVersion 19
+        minSdkVersion 9
+    }
+
+    compileOptions {
+        encoding = "UTF-8"
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+android.libraryVariants.all { variant ->
+    LibraryPlugin plugin = project.plugins.getPlugin(LibraryPlugin)
+    JavaCompile javaCompile = variant.javaCompile
+    javaCompile.doLast {
+        String[] args = [
+                "-showWeaveInfo",
+                "-1.6",
+                "-inpath", javaCompile.destinationDir.toString(),
+                "-aspectpath", javaCompile.classpath.asPath,
+                "-d", javaCompile.destinationDir.toString(),
+                "-classpath", javaCompile.classpath.asPath,
+                "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator)
+        ]
+
+        MessageHandler handler = new MessageHandler(true);
+        new Main().run(args, handler)
+
+        def log = project.logger
+        for (IMessage message : handler.getMessages(null, true)) {
+            switch (message.getKind()) {
+                case IMessage.ABORT:
+                case IMessage.ERROR:
+                case IMessage.FAIL:
+                    log.error message.message, message.thrown
+                    break;
+                case IMessage.WARNING:
+                case IMessage.INFO:
+                    log.info message.message, message.thrown
+                    break;
+                case IMessage.DEBUG:
+                    log.debug message.message, message.thrown
+                    break;
+            }
+        }
+    }
+}
+
+dependencies {
+    provided "com.android.support:support-v4:${supportVersion}"
+    compile "com.google.android.gms:play-services:${playServicesVersion}"
+    compile "org.aspectj:aspectjrt:${aspectjVersion}"
+}
+
+task install(type: Exec, dependsOn: assemble) {
+    executable = 'mvn'
+    args = [
+            "install:install-file",
+            "-DgroupId=com.uphyca.galette",
+            "-DartifactId=galette",
+            "-Dversion=${VERSION_NAME}",
+            "-Dpackaging=aar",
+            "-Dfile=build/libs/galette.aar"
+    ]
+}
+
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
