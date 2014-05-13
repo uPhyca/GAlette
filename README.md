@@ -28,14 +28,6 @@ dependencies {
 
 Implements TrackerProvider to your Application class
 ```
-package com.uphyca.example.galette;
-
-import android.app.Application;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Logger;
-import com.google.android.gms.analytics.Tracker;
-import com.uphyca.galette.TrackerProvider;
-
 public class MyApplication extends Application implements TrackerProvider {
 
     private Tracker mTracker;
@@ -65,11 +57,7 @@ Declare your application in AndroidManifest.xml
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".MyApplication"
-        android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:name=".MyApplication" ...>
 
         <activity ... />
     </application>
