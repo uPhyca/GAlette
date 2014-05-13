@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/uPhyca/galette.png?branch=master)](http://travis-ci.org/uPhyca/galette)
+[![Build Status](https://travis-ci.org/uPhyca/GAlette.png?branch=master)](http://travis-ci.org/uPhyca/GAlette)
 
 GAlette
 -------
