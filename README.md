@@ -5,6 +5,13 @@ GAlette
 Annotation-triggered tracking along with Google Analytics for Android.
 
 
+```java
+@SendEvent(category = "HelloWorld", action = "sayHello", label="%1$s")
+String sayHello (String name) {
+  return format("Hello, %s.", name);
+}
+```
+
 
 Usage
 -----
@@ -27,7 +34,7 @@ dependencies {
 ```
 
 Implements TrackerProvider to your Application class
-```
+```java
 public class MyApplication extends Application implements TrackerProvider {
 
     private Tracker mTracker;
@@ -48,7 +55,7 @@ public class MyApplication extends Application implements TrackerProvider {
 ```
 
 Declare your application in AndroidManifest.xml
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.uphyca.example.galette">
@@ -66,7 +73,7 @@ Declare your application in AndroidManifest.xml
 ```
 
 Annotate @SendAppView to your methods to track appView
-```
+```java
 public class MainActivity extends Activity {
 
     @Override
@@ -79,7 +86,7 @@ public class MainActivity extends Activity {
 ```
 
 Annotate @SendEvent to your methods to track event
-```
+```java
 public class MainActivity extends Activity {
 
     @Override
@@ -90,20 +97,20 @@ public class MainActivity extends Activity {
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onButtonClicked(++mClickCount);
+                onButtonClicked();
             }
         });
     }
 
     @SendEvent(category = "button", action = "click")
-    private void onButtonClicked(int count) {
+    private void onButtonClicked() {
         // Do something
     }
 }
 ```
 
-User FieldBuilder to build each field value
-```
+Use string template to apply method parameters
+```java
 public class MainActivity extends Activity {
 
     private int mClickCount;
@@ -121,15 +128,36 @@ public class MainActivity extends Activity {
         });
     }
 
-    @SendEvent(category = "button", action = "click", label = "times", valueBuilder = ClickCountValueBuilder.class)
+    @SendEvent(category = "button", action = "click", label = "times", value = "%1$d")
     private void onButtonClicked(int count) {
         // Do something
     }
+}
+```
 
-    public static class ClickCountValueBuilder extends LongFieldBuilder {
+
+Use FieldBuilder to build each field value
+```java
+public class MainActivity extends Activity {
+
+    @Override
+    @SendAppView(screenName = "", screenNameBuilder = BundleValueFieldBuilder.class)
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonClicked(++mClickCount);
+            }
+        });
+    }
+
+    public static class BundleValueFieldBuilder extends FieldBuilder<String> {
         @Override
-        public Long build(Fields fields, Long fieldValue, Object declaredObject, Method method, Object[] arguments) {
-            return ((Integer) arguments[0]).longValue();
+        public String build(Fields fields, String fieldValue, Object declaredObject, Method method, Object[] arguments) {
+            return ((Bundle) arguments[0]).getString("foo");
         }
     }
 }
