@@ -38,42 +38,59 @@ android {
     }
 }
 
-android.libraryVariants.all { variant ->
-    LibraryPlugin plugin = project.plugins.getPlugin(LibraryPlugin)
-    JavaCompile javaCompile = variant.javaCompile
-    javaCompile.doLast {
-        String[] args = [
-                "-showWeaveInfo",
-                "-1.6",
-                "-inpath", javaCompile.destinationDir.toString(),
-                "-aspectpath", javaCompile.classpath.asPath,
-                "-d", javaCompile.destinationDir.toString(),
-                "-classpath", javaCompile.classpath.asPath,
-                "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator)
-        ]
+project.afterEvaluate {
+    android.libraryVariants.all { variant ->
+        LibraryPlugin plugin = project.plugins.getPlugin(LibraryPlugin)
+        JavaCompile javaCompile = variant.javaCompile
+        javaCompile.doLast {
+            def sourceRoots = []
+            project.android.sourceSets.main.java.srcDirs.findAll { it.exists() }.each {
+                sourceRoots << it.absolutePath
+            }
+            project.android.sourceSets[new File(variant.dirName).name].java.srcDirs.findAll {
+                it.exists()
+            }.each { sourceRoots << it.absolutePath }
+            variant.productFlavors.each {
+                project.android.sourceSets[it.name].java.srcDirs.findAll { it.exists() }.each {
+                    sourceRoots << it.absolutePath
+                }
+            }
+            sourceRoots << "${project.buildDir}/source/r/${variant.dirName}"
+            sourceRoots << "${project.buildDir}/source/buildConfig/${variant.dirName}"
 
-        MessageHandler handler = new MessageHandler(true);
-        new Main().run(args, handler)
+            String[] args = [
+                    "-showWeaveInfo",
+                    "-1.6",
+                    "-d", javaCompile.destinationDir.toString(),
+                    "-classpath", javaCompile.classpath.asPath,
+                    "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator),
+                    "-sourceroots", sourceRoots.join(File.pathSeparator)
+            ]
 
-        def log = project.logger
-        for (IMessage message : handler.getMessages(null, true)) {
-            switch (message.getKind()) {
-                case IMessage.ABORT:
-                case IMessage.ERROR:
-                case IMessage.FAIL:
-                    log.error message.message, message.thrown
-                    break;
-                case IMessage.WARNING:
-                case IMessage.INFO:
-                    log.info message.message, message.thrown
-                    break;
-                case IMessage.DEBUG:
-                    log.debug message.message, message.thrown
-                    break;
+            MessageHandler handler = new MessageHandler(true);
+            new Main().run(args, handler)
+
+            def log = project.logger
+            for (IMessage message : handler.getMessages(null, true)) {
+                switch (message.getKind()) {
+                    case IMessage.ABORT:
+                    case IMessage.ERROR:
+                    case IMessage.FAIL:
+                        log.error message.message, message.thrown
+                        break;
+                    case IMessage.WARNING:
+                    case IMessage.INFO:
+                        log.info message.message, message.thrown
+                        break;
+                    case IMessage.DEBUG:
+                        log.debug message.message, message.thrown
+                        break;
+                }
             }
         }
     }
 }
+
 
 dependencies {
     provided "com.android.support:support-v4:${supportVersion}"
