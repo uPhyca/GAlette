@@ -96,7 +96,7 @@ public class GAlette {
         }
     }
 
-    private static final FieldBuilder<String> DEFAULT_STRING_FIELD_BUILDER = new StringFieldBuilder() {
+    static final FieldBuilder<String> DEFAULT_STRING_FIELD_BUILDER = new StringFieldBuilder() {
         @Override
         public String build(Fields fields, String fieldValue, Object declaredObject, Method method, Object[] arguments) {
             if (arguments == null || arguments.length == 0) {
@@ -106,45 +106,41 @@ public class GAlette {
         }
     };
 
-    private static final FieldBuilder<Long> DEFAULT_LONG_FIELD_BUILDER = new LongFieldBuilder() {
+    static final FieldBuilder<Long> DEFAULT_LONG_FIELD_BUILDER = new LongFieldBuilder() {
         @Override
         public Long build(Fields fields, Long fieldValue, Object declaredObject, Method method, Object[] arguments) {
             return fieldValue.longValue() > Long.MIN_VALUE ? fieldValue : null;
         }
     };
 
-    private final Map<Class<? extends FieldBuilder<?>>, FieldBuilder> mFieldBuilderMap = new HashMap<Class<? extends FieldBuilder<?>>, FieldBuilder>();
+    final Map<Class<? extends FieldBuilder<?>>, FieldBuilder> mFieldBuilderMap = new HashMap<Class<? extends FieldBuilder<?>>, FieldBuilder>();
 
-    private FieldBuilder<String> createStringFieldBuilder(Class<? extends FieldBuilder<String>> fieldBuilderClass) {
+    FieldBuilder<String> createStringFieldBuilder(Class<? extends FieldBuilder<String>> fieldBuilderClass) {
         return createFieldBuilder(fieldBuilderClass, StringFieldBuilder.class, DEFAULT_STRING_FIELD_BUILDER);
     }
 
-    private FieldBuilder<Long> createLongFieldBuilder(Class<? extends FieldBuilder<Long>> fieldBuilderClass) {
+    synchronized FieldBuilder<Long> createLongFieldBuilder(Class<? extends FieldBuilder<Long>> fieldBuilderClass) {
         return createFieldBuilder(fieldBuilderClass, LongFieldBuilder.class, DEFAULT_LONG_FIELD_BUILDER);
     }
 
-    private final Object[] mLock = new Object[0];
-
-    private <T> FieldBuilder<T> createFieldBuilder(Class<? extends FieldBuilder<T>> fieldBuilderClass, Class<? extends FieldBuilder<T>> defaultFieldBuilderClass, FieldBuilder<T> defaultFieldBuilder) {
+    <T> FieldBuilder<T> createFieldBuilder(Class<? extends FieldBuilder<T>> fieldBuilderClass, Class<? extends FieldBuilder<T>> defaultFieldBuilderClass, FieldBuilder<T> defaultFieldBuilder) {
         if (fieldBuilderClass == defaultFieldBuilderClass) {
             return defaultFieldBuilder;
         }
-        synchronized (mLock) {
-            if (!mFieldBuilderMap.containsKey(fieldBuilderClass)) {
-                try {
-                    FieldBuilder fieldBuilder = fieldBuilderClass.newInstance();
-                    mFieldBuilderMap.put(fieldBuilderClass, fieldBuilder);
-                } catch (InstantiationException e) {
-                    throw new IllegalArgumentException("Not found no-argument public constructor in " + fieldBuilderClass.getName(), e);
-                } catch (IllegalAccessException e) {
-                    throw new IllegalArgumentException("Not found no-argument public constructor in " + fieldBuilderClass.getName(), e);
-                }
+        if (!mFieldBuilderMap.containsKey(fieldBuilderClass)) {
+            try {
+                FieldBuilder fieldBuilder = fieldBuilderClass.newInstance();
+                mFieldBuilderMap.put(fieldBuilderClass, fieldBuilder);
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("Not found no-argument public constructor in " + fieldBuilderClass.getName(), e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("Not found no-argument public constructor in " + fieldBuilderClass.getName(), e);
             }
-            return mFieldBuilderMap.get(fieldBuilderClass);
         }
+        return mFieldBuilderMap.get(fieldBuilderClass);
     }
 
-    private static Tracker trackerFrom(Object obj, String trackerName) {
+    static Tracker trackerFrom(Object obj, String trackerName) {
         final Context context = appContextFrom(obj);
         final Tracker tracker;
         try {
@@ -155,7 +151,7 @@ public class GAlette {
         return null;
     }
 
-    private static Context appContextFrom(Object obj) {
+    static Context appContextFrom(Object obj) {
         for (ContextAware each : CONTEXT_AWARE_LIST) {
             Context context = each.contextFrom(obj);
             if (context != null) {
@@ -165,7 +161,7 @@ public class GAlette {
         throw new IllegalArgumentException("Failed to get context from " + obj.getClass().getName());
     }
 
-    private static final List<ContextAware> CONTEXT_AWARE_LIST;
+    static final List<ContextAware> CONTEXT_AWARE_LIST;
 
     static {
         ArrayList<ContextAware> list = new ArrayList<ContextAware>();
@@ -185,11 +181,11 @@ public class GAlette {
         CONTEXT_AWARE_LIST = Collections.unmodifiableList(list);
     }
 
-    private static interface ContextAware {
+    static interface ContextAware {
         Context contextFrom(Object obj);
     }
 
-    private static final class ApplicationAware implements ContextAware {
+    static class ApplicationAware implements ContextAware {
         @Override
         public Context contextFrom(Object obj) {
             if (obj instanceof Application) {
@@ -205,7 +201,7 @@ public class GAlette {
         }
     }
 
-    private static final class ContextWrapperAware implements ContextAware {
+    static class ContextWrapperAware implements ContextAware {
         @Override
         public Context contextFrom(Object obj) {
             return obj instanceof Context ? (Context) obj : null;
@@ -213,21 +209,21 @@ public class GAlette {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private static final class NativeFragmentContextAware implements ContextAware {
+    static class NativeFragmentContextAware implements ContextAware {
         @Override
         public Context contextFrom(Object obj) {
             return obj instanceof Fragment ? ((Fragment) obj).getActivity().getApplication() : null;
         }
     }
 
-    private static final class SupportFragmentContextAware implements ContextAware {
+    static class SupportFragmentContextAware implements ContextAware {
         @Override
         public Context contextFrom(Object obj) {
             return obj instanceof android.support.v4.app.Fragment ? ((android.support.v4.app.Fragment) obj).getActivity().getApplication() : null;
         }
     }
 
-    private static final class ContextProviderImpl implements ContextAware {
+    static class ContextProviderImpl implements ContextAware {
         @Override
         public Context contextFrom(Object obj) {
             return obj instanceof ContextProvider ? ((ContextProvider) obj).get() : null;
