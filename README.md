@@ -145,13 +145,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onButtonClicked(++mClickCount);
-            }
-        });
     }
 
     public static class BundleValueFieldBuilder extends FieldBuilder<String> {
