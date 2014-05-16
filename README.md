@@ -16,13 +16,16 @@ String sayHello (String name) {
 Usage
 -----
 
-Add the android-aspectj plugin to your `buildscript`'s `dependencies` section:
+Add the android-aspectj plugin to your `buildscript`'s `dependencies` section and apply the plugin:
 ```groovy
-classpath 'com.uphyca.gradle:gradle-android-aspectj-plugin:0.9.+'
-```
+buildscript {
+    dependencies {
+        ...
+        classpath 'com.uphyca.gradle:gradle-android-aspectj-plugin:0.9.+'
+    }
+}
 
-Apply the `android-aspectj` plugin:
-```groovy
+...
 apply plugin: 'android-aspectj'
 ```
 
