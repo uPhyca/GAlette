@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/uPhyca/GAlette.png?branch=master)](http://travis-ci.org/uPhyca/GAlette)
 
-GAlette
--------
+# GAlette
+
 Annotation-triggered tracking along with Google Analytics for Android.
 
 
@@ -12,9 +12,17 @@ String sayHello (String name) {
 }
 ```
 
+# Before you begin
 
-Usage
------
+Before using GAlette, make sure you have done following instructions described in https://developers.google.com/analytics/devguides/collection/android/v4/
+- Before you begin
+- Updating AndroidManifest.xml
+- Initialize Trackers
+- Create a configuration XML file
+
+
+# Getting Started
+
 
 Add the android-aspectj plugin to your `buildscript`'s `dependencies` section and apply the plugin:
 ```groovy
@@ -45,9 +53,7 @@ public class MyApplication extends Application implements TrackerProvider {
     @Override
     public void onCreate() {
         super.onCreate();
-        GoogleAnalytics ga = GoogleAnalytics.getInstance(this);
-        ga.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
-        mTracker = ga.newTracker("SET-YOUR-TRACKING-ID");
+        mTracker = ga.newTracker(R.xml.your_tracker_resource);
     }
 
     @Override
@@ -57,25 +63,27 @@ public class MyApplication extends Application implements TrackerProvider {
 }
 ```
 
-Declare your application in AndroidManifest.xml
+Declare your application in AndroidManifest.xml.
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.uphyca.example.galette">
+  ...
+    
+  <application
+    android:name=".MyApplication" ...>
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    ...
 
-    <application
-        android:name=".MyApplication" ...>
-
-        <activity ... />
-    </application>
-
+  </application>
 </manifest>
 ```
 
+## Send Screen View
+
 Annotate @SendAppView to your methods to track appView
+
 ```java
 public class MainActivity extends Activity {
 
@@ -88,7 +96,10 @@ public class MainActivity extends Activity {
 }
 ```
 
+## Measuring Events
+
 Annotate @SendEvent to your methods to track event
+
 ```java
 public class MainActivity extends Activity {
 
@@ -112,7 +123,12 @@ public class MainActivity extends Activity {
 }
 ```
 
+## Advanced Usage
+
+### String Templates
+
 Use string template to apply method parameters
+
 ```java
 public class MainActivity extends Activity {
 
@@ -138,8 +154,10 @@ public class MainActivity extends Activity {
 }
 ```
 
+### Customizing field values
 
 Use FieldBuilder to build each field value
+
 ```java
 public class MainActivity extends Activity {
 
@@ -159,8 +177,7 @@ public class MainActivity extends Activity {
 }
 ```
 
-License
--------
+# License
 
     Copyright 2014 uPhyca, Inc.
 
