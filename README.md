@@ -38,7 +38,7 @@ apply plugin: 'android-aspectj'
 ```
 
 Add the GAlette library to dependencies
-```
+```groovy
 dependencies {
   compile "com.uphyca.galette:galette:0.9.+"
 }
