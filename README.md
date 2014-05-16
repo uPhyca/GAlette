@@ -90,8 +90,7 @@ public class MainActivity extends Activity {
     @Override
     @SendAppView(screenName = "main")
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ...
     }
 }
 ```
@@ -105,9 +104,8 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        ...
+        
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,7 +116,7 @@ public class MainActivity extends Activity {
 
     @SendEvent(category = "button", action = "click")
     private void onButtonClicked() {
-        // Do something
+        ...
     }
 }
 ```
@@ -136,8 +134,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ...
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +146,7 @@ public class MainActivity extends Activity {
 
     @SendEvent(category = "button", action = "click", label = "times", value = "%1$d")
     private void onButtonClicked(int count) {
-        // Do something
+        ...
     }
 }
 ```
@@ -164,8 +161,7 @@ public class MainActivity extends Activity {
     @Override
     @SendAppView(screenName = "", screenNameBuilder = BundleValueFieldBuilder.class)
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ...
     }
 
     public static class BundleValueFieldBuilder extends FieldBuilder<String> {
