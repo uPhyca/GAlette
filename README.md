@@ -159,7 +159,7 @@ Use FieldBuilder to build each field value
 public class MainActivity extends Activity {
 
     @Override
-    @SendAppView(screenName = "", screenNameBuilder = BundleValueFieldBuilder.class)
+    @SendAppView(screenName = "foo", screenNameBuilder = BundleValueFieldBuilder.class)
     protected void onCreate(Bundle savedInstanceState) {
         ...
     }
@@ -167,7 +167,8 @@ public class MainActivity extends Activity {
     public static class BundleValueFieldBuilder extends FieldBuilder<String> {
         @Override
         public String build(Fields fields, String fieldValue, Object declaredObject, Method method, Object[] arguments) {
-            return ((Bundle) arguments[0]).getString("foo");
+            // annotation's screenName value paths to fieldValue, in this case 'foo'
+            return ((Bundle) arguments[0]).getString(fieldValue);
         }
     }
 }
