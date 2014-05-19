@@ -1,7 +1,7 @@
 project.ext {
     supportVersion = '19.1.+'
     playServicesVersion = '4.3.+'
-    aspectjVersion = '1.7.4'
+    asmVersion = '5.0.2'
 }
 
 allprojects {
@@ -14,6 +14,7 @@ allprojects {
     dependencies {
         repositories {
             mavenCentral()
+            mavenLocal()
         }
     }
 
@@ -25,4 +26,40 @@ allprojects {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.10'
+}
+
+task cleanExample(type: Exec) {
+    executable = 'gradle'
+    workingDir = project.file('example')
+    args = [ 'clean' ]
+}
+
+task assembleExample(type: Exec) {
+    executable = 'gradle'
+    workingDir = project.file('example')
+    args = [ 'assemble' ]
+}
+
+task installExample(type: Exec) {
+    executable = 'gradle'
+    workingDir = project.file('example')
+    args = [ 'installDebug' ]
+}
+
+task cleanTests(type: Exec) {
+    executable = 'gradle'
+    workingDir = project.file('tests')
+    args = [ 'clean' ]
+}
+
+task assembleTests(type: Exec) {
+    executable = 'gradle'
+    workingDir = project.file('tests')
+    args = [ 'assemble' ]
+}
+
+task androidTests(type: Exec) {
+    executable = 'gradle'
+    workingDir = project.file('tests')
+    args = [ 'connectedAndroidTest' ]
 }

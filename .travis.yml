@@ -9,7 +9,7 @@ before_install:
   - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-1/android-sdk-installer | bash /dev/stdin --install=$COMPONENTS
   - source ~/.android-sdk-installer/env
 
-script: gradle assemble
+script: gradle clean galette:install galette-instrumentation:install galette-plugin:install
 
 notifications:
   email:

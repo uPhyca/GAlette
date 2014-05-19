@@ -24,25 +24,19 @@ Before using GAlette, make sure you have done following instructions described i
 # Getting Started
 
 
-Add the android-aspectj plugin to your `buildscript`'s `dependencies` section and apply the plugin:
+Add the GAlette plugin to your `buildscript`'s `dependencies` section and apply the plugin:
 ```groovy
 buildscript {
     dependencies {
         ...
-        classpath 'com.uphyca.gradle:gradle-android-aspectj-plugin:0.9.+'
+        classpath 'com.uphyca.galette:galette-plugin:0.9.+'
     }
 }
 
 ...
-apply plugin: 'android-aspectj'
+apply plugin: 'galette'
 ```
 
-Add the GAlette library to dependencies
-```groovy
-dependencies {
-  compile "com.uphyca.galette:galette:0.9.+"
-}
-```
 
 Implements TrackerProvider to your Application class
 ```java
@@ -173,6 +167,16 @@ public class MainActivity extends Activity {
     }
 }
 ```
+
+## Proguard
+
+```
+-keepclassmembernames class * {
+    @com.uphyca.galette.SendAppView *;
+    @com.uphyca.galette.SendEvent *;
+}
+```
+
 
 # License
 
