@@ -147,7 +147,7 @@ public class GAletteInstrumentation {
             storeLocal(methodVariableId);
 
             // Invoke the tracking method
-            // e.g. GAlette.sendAppView(method, argumentValues)
+            // e.g. GAlette.sendAppView(owner, method, argumentValues)
             loadThis();
             loadLocal(methodVariableId);
             loadLocal(argumentValuesVariableId);
