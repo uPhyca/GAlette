@@ -1,10 +1,16 @@
 include 'library'
 project(':library').name = 'galette'
 
-include 'tests'
-project(':tests').name = 'tests'
+include 'instrumentation'
+project(':instrumentation').name = 'galette-instrumentation'
 
-include 'example'
-project(':example').name = 'example'
+include 'plugin'
+project(':plugin').name = 'galette-plugin'
+
+//include 'tests'
+//project(':tests').name = 'tests'
+//
+//include 'example'
+//project(':example').name = 'example'
 
 project(':').name = 'android-galette-parent'

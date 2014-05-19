@@ -28,73 +28,73 @@ import android.util.Log;
 import android.view.View;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.*;
 
-/**
- * Aspect to weave Google Analytics.
- */
-public privileged aspect GAlette {
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
-    pointcut sendAppViewMethods(SendAppView analyticsAnnotation): execution(* *.*(..)) && @annotation(analyticsAnnotation);
+public class GAlette {
 
-    before(SendAppView analyticsAnnotation): sendAppViewMethods(analyticsAnnotation) {
-        sendAppView(thisJoinPoint, analyticsAnnotation);
-    };
+    private static GAlette INSTANCE = new GAlette();
 
-    pointcut sendEventMethods(SendEvent analyticsAnnotation): execution(* *.*(..)) && @annotation(analyticsAnnotation);
+    static GAlette getInsntance() {
+        return INSTANCE;
+    }
 
-    before(SendEvent analyticsAnnotation): sendEventMethods(analyticsAnnotation) {
-        sendEvent(thisJoinPoint, analyticsAnnotation);
-    };
+    public static void sendAppView(Object obj, Method method, Object[] arguments) {
+        getInsntance().sendAppView0(obj, method, arguments);
+    }
 
-    private void sendAppView(JoinPoint joinPoint, SendAppView analyticsAnnotation) {
-        final Tracker tracker = trackerFrom(joinPoint.getThis(), analyticsAnnotation.trackerName());
+    public static void sendEvent(Object obj, Method method, Object[] arguments) {
+        getInsntance().sendEvent0(obj, method, arguments);
+    }
+
+    private void sendAppView0(Object obj, Method method, Object[] arguments) {
+        final SendAppView analyticsAnnotation = method.getAnnotation(SendAppView.class);
+        final Tracker tracker = trackerFrom(obj, analyticsAnnotation.trackerName());
         if (tracker == null) {
             return;
         }
-        final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        final Method method = signature.getMethod();
 
         final HitBuilders.AppViewBuilder builder = new HitBuilders.AppViewBuilder();
         try {
             final FieldBuilder<String> screenNameBuilder = createStringFieldBuilder(analyticsAnnotation.screenNameBuilder());
-            final String screenName = screenNameBuilder.build(Fields.SCREEN_NAME, analyticsAnnotation.screenName(), joinPoint.getThis(), method, joinPoint.getArgs());
+            final String screenName = screenNameBuilder.build(Fields.SCREEN_NAME, analyticsAnnotation.screenName(), obj, method, arguments);
             tracker.setScreenName(screenName);
         } finally {
             tracker.send(builder.build());
         }
     }
 
-    private void sendEvent(JoinPoint joinPoint, SendEvent analyticsAnnotation) {
-        final Tracker tracker = trackerFrom(joinPoint.getThis(), analyticsAnnotation.trackerName());
+    private void sendEvent0(Object obj, Method method, Object[] arguments) {
+        final SendEvent analyticsAnnotation = method.getAnnotation(SendEvent.class);
+        final Tracker tracker = trackerFrom(obj, analyticsAnnotation.trackerName());
         if (tracker == null) {
             return;
         }
-        final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        final Method method = signature.getMethod();
 
         final HitBuilders.EventBuilder builder = new HitBuilders.EventBuilder();
         try {
             final FieldBuilder<String> categoryBuilder = createStringFieldBuilder(analyticsAnnotation.categoryBuilder());
-            final String category = categoryBuilder.build(Fields.CATEGORY, analyticsAnnotation.category(), joinPoint.getThis(), method, joinPoint.getArgs());
+            final String category = categoryBuilder.build(Fields.CATEGORY, analyticsAnnotation.category(), obj, method, arguments);
             builder.setCategory(category);
 
             final FieldBuilder<String> actionBuilder = createStringFieldBuilder(analyticsAnnotation.actionBuilder());
-            final String action = actionBuilder.build(Fields.ACTION, analyticsAnnotation.action(), joinPoint.getThis(), method, joinPoint.getArgs());
+            final String action = actionBuilder.build(Fields.ACTION, analyticsAnnotation.action(), obj, method, arguments);
             builder.setAction(action);
 
             final FieldBuilder<String> labelBuilder = createStringFieldBuilder(analyticsAnnotation.labelBuilder());
-            final String label = labelBuilder.build(Fields.LABEL, analyticsAnnotation.label(), joinPoint.getThis(), method, joinPoint.getArgs());
+            final String label = labelBuilder.build(Fields.LABEL, analyticsAnnotation.label(), obj, method, arguments);
             if (!TextUtils.isEmpty(label)) {
                 builder.setLabel(label);
             }
 
             final FieldBuilder<Long> valueBuilder = createLongFieldBuilder(analyticsAnnotation.valueBuilder());
-            final Long value = valueBuilder.build(Fields.VALUE, analyticsAnnotation.value(), joinPoint.getThis(), method, joinPoint.getArgs());
+            final Long value = valueBuilder.build(Fields.VALUE, analyticsAnnotation.value(), obj, method, arguments);
             if (value != null) {
                 builder.setValue(value);
             }
@@ -245,5 +245,10 @@ public privileged aspect GAlette {
         public Context contextFrom(Object obj) {
             return obj instanceof ContextProvider ? ((ContextProvider) obj).get() : null;
         }
+    }
+
+    @Target(ElementType.TYPE)
+    @Retention(CLASS)
+    private @interface Baked {
     }
 }

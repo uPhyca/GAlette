@@ -1,12 +1,6 @@
-import com.android.build.gradle.LibraryPlugin
-import org.aspectj.bridge.IMessage
-import org.aspectj.bridge.MessageHandler
-import org.aspectj.tools.ajc.Main
-
 buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:0.9.+'
-        classpath 'org.aspectj:aspectjtools:1.7.4'
         classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'
     }
 }
@@ -38,64 +32,10 @@ android {
     }
 }
 
-project.afterEvaluate {
-    android.libraryVariants.all { variant ->
-        LibraryPlugin plugin = project.plugins.getPlugin(LibraryPlugin)
-        JavaCompile javaCompile = variant.javaCompile
-        javaCompile.doLast {
-            def sourceRoots = []
-            project.android.sourceSets.main.java.srcDirs.findAll { it.exists() }.each {
-                sourceRoots << it.absolutePath
-            }
-            project.android.sourceSets[new File(variant.dirName).name].java.srcDirs.findAll {
-                it.exists()
-            }.each { sourceRoots << it.absolutePath }
-            variant.productFlavors.each {
-                project.android.sourceSets[it.name].java.srcDirs.findAll { it.exists() }.each {
-                    sourceRoots << it.absolutePath
-                }
-            }
-            sourceRoots << "${project.buildDir}/source/r/${variant.dirName}"
-            sourceRoots << "${project.buildDir}/source/buildConfig/${variant.dirName}"
-
-            String[] args = [
-                    "-showWeaveInfo",
-                    "-1.6",
-                    "-d", javaCompile.destinationDir.toString(),
-                    "-classpath", javaCompile.classpath.asPath,
-                    "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator),
-                    "-sourceroots", sourceRoots.join(File.pathSeparator)
-            ]
-
-            MessageHandler handler = new MessageHandler(true);
-            new Main().run(args, handler)
-
-            def log = project.logger
-            for (IMessage message : handler.getMessages(null, true)) {
-                switch (message.getKind()) {
-                    case IMessage.ABORT:
-                    case IMessage.ERROR:
-                    case IMessage.FAIL:
-                        log.error message.message, message.thrown
-                        break;
-                    case IMessage.WARNING:
-                    case IMessage.INFO:
-                        log.info message.message, message.thrown
-                        break;
-                    case IMessage.DEBUG:
-                        log.debug message.message, message.thrown
-                        break;
-                }
-            }
-        }
-    }
-}
-
 
 dependencies {
     provided "com.android.support:support-v4:${supportVersion}"
-    compile "com.google.android.gms:play-services:${playServicesVersion}"
-    compile "org.aspectj:aspectjrt:${aspectjVersion}"
+    compile "com.google.android.gms:play-services:${playServicesVersion}@aar"
 }
 
 task install(type: Exec, dependsOn: assemble) {
@@ -110,4 +50,4 @@ task install(type: Exec, dependsOn: assemble) {
     ]
 }
 
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
