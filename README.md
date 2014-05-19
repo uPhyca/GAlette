@@ -53,6 +53,7 @@ public class MyApplication extends Application implements TrackerProvider {
     @Override
     public void onCreate() {
         super.onCreate();
+        GoogleAnalytics ga = GoogleAnalytics.getInstance(this);
         mTracker = ga.newTracker(R.xml.your_tracker_resource);
     }
 
