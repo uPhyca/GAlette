@@ -25,7 +25,7 @@ class GAlettePlugin implements Plugin<Project> {
         project.configurations.create('galette')
 
         project.dependencies {
-            compile 'com.uphyca.galette:galette:0.9.2-SNAPSHOT'
+            compile 'com.uphyca.galette:galette:0.9.2-SNAPSHOT@aar'
             compile 'com.google.android.gms:play-services:4.3.+@aar'
             galette 'com.uphyca.galette:galette-instrumentation:0.9.2-SNAPSHOT'
         }
