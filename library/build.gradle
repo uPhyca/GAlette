@@ -50,4 +50,4 @@ task install(type: Exec, dependsOn: assemble) {
     ]
 }
 
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
