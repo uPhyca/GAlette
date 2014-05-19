@@ -24,10 +24,12 @@ class GAlettePlugin implements Plugin<Project> {
 
         project.configurations.create('galette')
 
+        def galetteVersion = getPluginVersion(project, "com.uphyca.galette", "galette-plugin")
+
         project.dependencies {
-            compile 'com.uphyca.galette:galette:0.9.2-SNAPSHOT@aar'
             compile 'com.google.android.gms:play-services:4.3.+@aar'
-            galette 'com.uphyca.galette:galette-instrumentation:0.9.2-SNAPSHOT'
+            compile "com.uphyca.galette:galette:${galetteVersion}@aar"
+            galette "com.uphyca.galette:galette-instrumentation:${galetteVersion}"
         }
 
         variants.all { variant ->
@@ -49,5 +51,20 @@ class GAlettePlugin implements Plugin<Project> {
                 }
             }
         }
+    }
+
+    String getPluginVersion(Project project, String group, String name) {
+        def Project targetProject = project
+        while (targetProject != null) {
+            def version
+            targetProject.buildscript.configurations.classpath.resolvedConfiguration.firstLevelModuleDependencies.each {
+                e-> if (e.moduleGroup.equals(group) && e.moduleName.equals(name)) {version = e.moduleVersion}
+            }
+            if (version != null) {
+                return version
+            }
+            targetProject = targetProject.parent
+        }
+        return null
     }
 }
