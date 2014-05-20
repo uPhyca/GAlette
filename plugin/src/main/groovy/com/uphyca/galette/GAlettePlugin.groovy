@@ -36,19 +36,20 @@ class GAlettePlugin implements Plugin<Project> {
             JavaCompile javaCompile = variant.javaCompile
 
             javaCompile.doLast {
-                def javaexecClasspath = project.files()
-                plugin.runtimeJarList.each { javaexecClasspath += project.files(it) }
-                javaexecClasspath += javaCompile.classpath
-                javaexecClasspath += project.configurations["galette"]
-                javaexecClasspath += project.files(javaCompile.destinationDir)
+                def classpath = project.files()
+                plugin.runtimeJarList.each { classpath += project.files(it) }
+                classpath += javaCompile.classpath
+                classpath += project.configurations["galette"]
+                classpath += project.files(javaCompile.destinationDir)
 
-                def javaexecArgs = [javaCompile.destinationDir.absolutePath].toList()
-
-                project.javaexec {
-                    main = 'com.uphyca.galette.GAletteInstrumentation'
-                    classpath = javaexecClasspath
-                    args = javaexecArgs
+                def uris = classpath.collect {
+                    it.toURI().toURL()
                 }
+
+                def loader = new URLClassLoader(uris as URL[], (ClassLoader) null)
+                def instClass = loader.loadClass("com.uphyca.galette.GAletteInstrumentation")
+                def inst = instClass.newInstance()
+                inst.processFiles(javaCompile.destinationDir)
             }
         }
     }
@@ -58,7 +59,10 @@ class GAlettePlugin implements Plugin<Project> {
         while (targetProject != null) {
             def version
             targetProject.buildscript.configurations.classpath.resolvedConfiguration.firstLevelModuleDependencies.each {
-                e-> if (e.moduleGroup.equals(group) && e.moduleName.equals(name)) {version = e.moduleVersion}
+                e ->
+                    if (e.moduleGroup.equals(group) && e.moduleName.equals(name)) {
+                        version = e.moduleVersion
+                    }
             }
             if (version != null) {
                 return version

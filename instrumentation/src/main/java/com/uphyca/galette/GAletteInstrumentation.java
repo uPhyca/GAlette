@@ -233,7 +233,10 @@ public class GAletteInstrumentation {
     /**
      * Process the file
      */
-    public void process(File classFile) throws Exception {
+    public void processFile(File classFile) throws Exception {
+        if (classFile.isDirectory()) {
+            throw new IllegalArgumentException(classFile + " is not a directory");
+        }
         InputStream in = null;
         try {
             in = new FileInputStream(classFile);
@@ -289,20 +292,24 @@ public class GAletteInstrumentation {
         }
     }
 
-    private static void recurceFiles(File f, GAletteInstrumentation inst) throws Exception {
-        if (f.isFile()) {
-            if (f.getName().endsWith(".class")) {
-                inst.process(f);
+    public void processFiles(File fileOrDirectory) throws Exception {
+        if (fileOrDirectory.isFile()) {
+            if (fileOrDirectory.getName().endsWith(".class")) {
+                processFile(fileOrDirectory);
             }
         } else {
-            for (File each : f.listFiles()) {
-                recurceFiles(each, inst);
+            for (File each : fileOrDirectory.listFiles()) {
+                processFiles(each);
             }
         }
     }
 
     public static void main(String[] args) throws Exception {
         final GAletteInstrumentation inst = new GAletteInstrumentation();
-        recurceFiles(new File(args[0]), inst);
+        File f = new File(args[0]);
+        if (!f.exists()) {
+            throw new IllegalArgumentException(f + " does not exists");
+        }
+        inst.processFiles(f);
     }
 }
