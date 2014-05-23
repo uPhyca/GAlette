@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 0.9.4 *(2014-05-23)*
+----------------------------
+
+- New: Support Android Gradle Plugin 0.10
+- New: Support Google Play Services 4.4
+
+
 Version 0.9.3 *(2014-05-20)*
 ----------------------------
 
