@@ -37,7 +37,14 @@ class GAlettePlugin implements Plugin<Project> {
 
             javaCompile.doLast {
                 def classpath = project.files()
-                plugin.runtimeJarList.each { classpath += project.files(it) }
+
+                if (plugin.properties['runtimeJarList']) {
+                    // 0.9
+                    plugin.runtimeJarList.each { classpath += project.files(it) }
+                } else if (project.android.properties['bootClasspath']) {
+                    // 0.10
+                    project.android.bootClasspath.each { classpath += project.files(it) }
+                }
                 classpath += javaCompile.classpath
                 classpath += project.configurations["galette"]
                 classpath += project.files(javaCompile.destinationDir)
