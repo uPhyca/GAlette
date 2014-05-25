@@ -16,16 +16,9 @@
 
 package com.uphyca.galette;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Application;
-import android.app.Fragment;
-import android.app.Service;
 import android.content.Context;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -33,7 +26,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.annotation.RetentionPolicy.CLASS;
 
@@ -45,17 +39,17 @@ public class GAlette {
         return INSTANCE;
     }
 
-    public static void sendAppView(Object obj, Method method, Object[] arguments) {
-        getInsntance().sendAppView0(obj, method, arguments);
+    public static void sendAppView(Object target, Context appContext, Method method, Object[] arguments) {
+        getInsntance().sendAppView0(target, appContext, method, arguments);
     }
 
-    public static void sendEvent(Object obj, Method method, Object[] arguments) {
-        getInsntance().sendEvent0(obj, method, arguments);
+    public static void sendEvent(Object target, Context appContext, Method method, Object[] arguments) {
+        getInsntance().sendEvent0(target, appContext, method, arguments);
     }
 
-    private void sendAppView0(Object obj, Method method, Object[] arguments) {
+    private void sendAppView0(Object target, Context appContext, Method method, Object[] arguments) {
         final SendAppView analyticsAnnotation = method.getAnnotation(SendAppView.class);
-        final Tracker tracker = trackerFrom(obj, analyticsAnnotation.trackerName());
+        final Tracker tracker = trackerFrom(appContext, analyticsAnnotation.trackerName());
         if (tracker == null) {
             return;
         }
@@ -63,16 +57,16 @@ public class GAlette {
         final HitBuilders.AppViewBuilder builder = new HitBuilders.AppViewBuilder();
         try {
             final FieldBuilder<String> screenNameBuilder = createStringFieldBuilder(analyticsAnnotation.screenNameBuilder());
-            final String screenName = screenNameBuilder.build(Fields.SCREEN_NAME, analyticsAnnotation.screenName(), obj, method, arguments);
+            final String screenName = screenNameBuilder.build(Fields.SCREEN_NAME, analyticsAnnotation.screenName(), target, method, arguments);
             tracker.setScreenName(screenName);
         } finally {
             tracker.send(builder.build());
         }
     }
 
-    private void sendEvent0(Object obj, Method method, Object[] arguments) {
+    private void sendEvent0(Object target, Context appContext, Method method, Object[] arguments) {
         final SendEvent analyticsAnnotation = method.getAnnotation(SendEvent.class);
-        final Tracker tracker = trackerFrom(obj, analyticsAnnotation.trackerName());
+        final Tracker tracker = trackerFrom(appContext, analyticsAnnotation.trackerName());
         if (tracker == null) {
             return;
         }
@@ -80,21 +74,21 @@ public class GAlette {
         final HitBuilders.EventBuilder builder = new HitBuilders.EventBuilder();
         try {
             final FieldBuilder<String> categoryBuilder = createStringFieldBuilder(analyticsAnnotation.categoryBuilder());
-            final String category = categoryBuilder.build(Fields.CATEGORY, analyticsAnnotation.category(), obj, method, arguments);
+            final String category = categoryBuilder.build(Fields.CATEGORY, analyticsAnnotation.category(), target, method, arguments);
             builder.setCategory(category);
 
             final FieldBuilder<String> actionBuilder = createStringFieldBuilder(analyticsAnnotation.actionBuilder());
-            final String action = actionBuilder.build(Fields.ACTION, analyticsAnnotation.action(), obj, method, arguments);
+            final String action = actionBuilder.build(Fields.ACTION, analyticsAnnotation.action(), target, method, arguments);
             builder.setAction(action);
 
             final FieldBuilder<String> labelBuilder = createStringFieldBuilder(analyticsAnnotation.labelBuilder());
-            final String label = labelBuilder.build(Fields.LABEL, analyticsAnnotation.label(), obj, method, arguments);
+            final String label = labelBuilder.build(Fields.LABEL, analyticsAnnotation.label(), target, method, arguments);
             if (!TextUtils.isEmpty(label)) {
                 builder.setLabel(label);
             }
 
             final FieldBuilder<Long> valueBuilder = createLongFieldBuilder(analyticsAnnotation.valueBuilder());
-            final Long value = valueBuilder.build(Fields.VALUE, analyticsAnnotation.value(), obj, method, arguments);
+            final Long value = valueBuilder.build(Fields.VALUE, analyticsAnnotation.value(), target, method, arguments);
             if (value != null) {
                 builder.setValue(value);
             }
@@ -150,101 +144,13 @@ public class GAlette {
         return mFieldBuilderMap.get(fieldBuilderClass);
     }
 
-    private static Tracker trackerFrom(Object obj, String trackerName) {
-        final Context context = appContextFrom(obj);
+    private static Tracker trackerFrom(Context appContext, String trackerName) {
         try {
-            return ((TrackerProvider) context).getByName(!TextUtils.isEmpty(trackerName) ? trackerName : null);
+            return ((TrackerProvider) appContext).getByName(!TextUtils.isEmpty(trackerName) ? trackerName : null);
         } catch (ClassCastException e) {
             Log.w("GAlette", "Application must be a type of " + "com.uphyca.galette.TrackerProvider");
         }
         return null;
-    }
-
-    private static Context appContextFrom(Object obj) {
-        for (ContextAware each : CONTEXT_AWARE_LIST) {
-            Context context = each.contextFrom(obj);
-            if (context != null) {
-                return (context instanceof Application) ? context : context.getApplicationContext();
-            }
-        }
-        throw new IllegalArgumentException("Failed to get context from " + obj.getClass().getName());
-    }
-
-    private static final List<ContextAware> CONTEXT_AWARE_LIST;
-
-    static {
-        ArrayList<ContextAware> list = new ArrayList<ContextAware>();
-        list.add(new ApplicationAware());
-        try {
-            Class.forName("android.app.Fragment");
-            list.add(new NativeFragmentContextAware());
-        } catch (ClassNotFoundException ignore) {
-        }
-        try {
-            Class.forName("android.support.v4.app.Fragment");
-            list.add(new SupportFragmentContextAware());
-        } catch (ClassNotFoundException ignore) {
-        }
-        list.add(new ContextProviderImpl());
-        list.add(new ViewImpl());
-        list.add(new ContextImpl());
-        CONTEXT_AWARE_LIST = Collections.unmodifiableList(list);
-    }
-
-    private static interface ContextAware {
-        Context contextFrom(Object obj);
-    }
-
-    private static final class ApplicationAware implements ContextAware {
-        @Override
-        public Context contextFrom(Object obj) {
-            if (obj instanceof Application) {
-                return (Context) obj;
-            }
-            if (obj instanceof Activity) {
-                return ((Activity) obj).getApplication();
-            }
-            if (obj instanceof Service) {
-                return ((Service) obj).getApplication();
-            }
-            return null;
-        }
-    }
-
-    private static final class ContextImpl implements ContextAware {
-        @Override
-        public Context contextFrom(Object obj) {
-            return obj instanceof Context ? (Context) obj : null;
-        }
-    }
-
-    private static final class ViewImpl implements ContextAware {
-        @Override
-        public Context contextFrom(Object obj) {
-            return obj instanceof View ? ((View) obj).getContext() : null;
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private static final class NativeFragmentContextAware implements ContextAware {
-        @Override
-        public Context contextFrom(Object obj) {
-            return obj instanceof Fragment ? ((Fragment) obj).getActivity().getApplication() : null;
-        }
-    }
-
-    private static final class SupportFragmentContextAware implements ContextAware {
-        @Override
-        public Context contextFrom(Object obj) {
-            return obj instanceof android.support.v4.app.Fragment ? ((android.support.v4.app.Fragment) obj).getActivity().getApplication() : null;
-        }
-    }
-
-    private static final class ContextProviderImpl implements ContextAware {
-        @Override
-        public Context contextFrom(Object obj) {
-            return obj instanceof ContextProvider ? ((ContextProvider) obj).get() : null;
-        }
     }
 
     @Target(ElementType.TYPE)

@@ -54,6 +54,11 @@ public class GAletteInstrumentation {
         }
 
         @Override
+        public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+            return super.visitField(access, name, desc, signature, value);
+        }
+
+        @Override
         public void visitEnd() {
             if (proceed[0]) {
                 visitAnnotation("Lcom/uphyca/galette/GAlette$Baked;", false);
@@ -106,6 +111,8 @@ public class GAletteInstrumentation {
             final int methodVariableId = newLocal(Type.getObjectType("java/lang/reflect/Method"));
             // The local variable to store argument values
             final int argumentValuesVariableId = newLocal(Type.getObjectType("[Ljava/lang/Object;"));
+            // The local variable to store context
+            final int contextVariableId = newLocal(Type.getObjectType("[Landroid/content/Context;"));
 
             // Allocate the array to store argument values.
             // e.g. Object[] argumentValues = new Object[arguments.length]
@@ -148,15 +155,58 @@ public class GAletteInstrumentation {
 
             // Invoke the tracking method
             // e.g. GAlette.sendAppView(owner, method, argumentValues)
+            try {
+                Class<?> type = Class.forName(className.replace('/', '.'));
+                if (Class.forName("com.uphyca.galette.ContextProvider").isAssignableFrom(type)) {
+                    loadThis();
+                    visitTypeInsn(CHECKCAST, "com/uphyca/galette/ContextProvider");
+                    visitMethodInsn(INVOKEINTERFACE, "com/uphyca/galette/ContextProvider", "get", "()Landroid/content/Context;", true);
+                    visitMethodInsn(INVOKEVIRTUAL, "android/content/Context", "getApplicationContext", "()Landroid/content/Context;", false);
+                } else if (Class.forName("android.app.Application").isAssignableFrom(type)) {
+                    loadThis();
+                } else if (Class.forName("android.app.Activity").isAssignableFrom(type)) {
+                    loadThis();
+                    visitTypeInsn(CHECKCAST, "android/app/Activity");
+                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Activity", "getApplication", "()Landroid/app/Application;", false);
+                } else if (Class.forName("android.app.Service").isAssignableFrom(type)) {
+                    loadThis();
+                    visitTypeInsn(CHECKCAST, "android/app/Service");
+                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Service", "getApplication", "()Landroid/app/Application;", false);
+                } else if (Class.forName("android.view.View").isAssignableFrom(type)) {
+                    loadThis();
+                    visitTypeInsn(CHECKCAST, "android/view/View");
+                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/view/View", "getContext", "()Landroid/content/Context;", false);
+                } else if (Class.forName("android.app.Fragment").isAssignableFrom(type)) {
+                    loadThis();
+                    visitTypeInsn(CHECKCAST, "android/app/Fragment");
+                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Fragment", "getActivity", "()Landroid/app/Activity;", false);
+                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Activity", "getApplication", "()Landroid/app/Application;", false);
+                } else if (Class.forName("android.support.v4.app.Fragment").isAssignableFrom(type)) {
+                    loadThis();
+                    visitTypeInsn(CHECKCAST, "android/support/v4/app/Fragment");
+                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/support/v4/app/Fragment", "getActivity", "()Landroid/app/Activity;", false);
+                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Activity", "getApplication", "()Landroid/app/Application;", false);
+                } else if (Class.forName("android.content.Context").isAssignableFrom(type)) {
+                    loadThis();
+                    visitTypeInsn(CHECKCAST, "android/content/Context");
+                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/content/Context", "getApplicationContext", "()Landroid/content/Context;", false);
+                } else {
+                    visitInsn(Opcodes.ACONST_NULL);
+                }
+                visitTypeInsn(CHECKCAST, "android/content/Context");
+                storeLocal(contextVariableId);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalStateException(e);
+            }
             loadThis();
+            loadLocal(contextVariableId);
             loadLocal(methodVariableId);
             loadLocal(argumentValuesVariableId);
-            visitMethodInsn(Opcodes.INVOKESTATIC, "com/uphyca/galette/GAlette", trackingMethodName, "(Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/Object;)V", false);
+            visitMethodInsn(Opcodes.INVOKESTATIC, "com/uphyca/galette/GAlette", trackingMethodName, "(Ljava/lang/Object;Landroid/content/Context;Ljava/lang/reflect/Method;[Ljava/lang/Object;)V", false);
 
             visitMaxs(0, 0);
             super.onMethodEnter();
         }
-
 
         /**
          * Push type to statck

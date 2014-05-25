@@ -1,5 +1,7 @@
 package com.uphyca.galette;
 
+import android.content.Context;
+
 import java.lang.reflect.Method;
 
 /**
@@ -8,9 +10,9 @@ import java.lang.reflect.Method;
 public class GAlette {
 
     interface IGAlette {
-        void sendAppView(Object owner, Method method, Object[] arguments);
+        void sendAppView(Object target, Context context, Method method, Object[] arguments);
 
-        void sendEvent(Object owner, Method method, Object[] arguments);
+        void sendEvent(Object target, Context context, Method method, Object[] arguments);
     }
 
     private static IGAlette sIGAlette;
@@ -19,11 +21,11 @@ public class GAlette {
         sIGAlette = IGAlette;
     }
 
-    static void sendAppView(Object owner, Method method, Object[] arguments) {
-        sIGAlette.sendAppView(owner, method, arguments);
+    static void sendAppView(Object target, Context context, Method method, Object[] arguments) {
+        sIGAlette.sendAppView(target, context, method, arguments);
     }
 
-    static void sendEvent(Object owner, Method method, Object[] arguments) {
-        sIGAlette.sendEvent(owner, method, arguments);
+    static void sendEvent(Object target, Context context, Method method, Object[] arguments) {
+        sIGAlette.sendEvent(target, context, method, arguments);
     }
 }
