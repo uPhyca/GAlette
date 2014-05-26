@@ -14,12 +14,12 @@ build:
           echo $ANDROID_NDK_HOME
     - android-sdk-update:
         filter: platform-tools,android-19,sysimg-19,extra-android-support,extra-android-m2repository,extra-google-m2repository
-    - setup-android-emulator:
-        target: android-19
     - script:
         name: run gradle
         code: |
           gradle --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR build install
+    - setup-android-emulator:
+        target: android-19
     - script:
         name: run gradle connectedCheck
         code: |
