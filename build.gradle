@@ -76,7 +76,7 @@ task assembleTest010(type: Exec) {
     args = [ 'assemble' ]
 }
 
-task connectedAndroidTest09(type: Exec) {
+task connectedAndroidTest010(type: Exec) {
     executable = 'gradle'
     workingDir = project.file('tests010')
     args = [ 'connectedAndroidTest' ]
