@@ -27,6 +27,9 @@ public class GAletteInstrumentation {
     static class ModifierClassWriter extends ClassVisitor {
 
         private String name;
+        private String syntheticFieldName;
+        private String syntheticFieldType;
+
         private final boolean[] proceed = new boolean[1];
 
         ModifierClassWriter(int api, ClassVisitor cv) {
@@ -49,12 +52,16 @@ public class GAletteInstrumentation {
         @Override
         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
             MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-            ModifierMethodWriter mvw = new ModifierMethodWriter(api, this.name, mv, access, name, desc, proceed);
+            ModifierMethodWriter mvw = new ModifierMethodWriter(api, this.name, mv, access, name, desc, proceed, syntheticFieldName, syntheticFieldType);
             return mvw;
         }
 
         @Override
         public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+            if ((access & Opcodes.ACC_SYNTHETIC) == Opcodes.ACC_SYNTHETIC && (access & Opcodes.ACC_FINAL) == Opcodes.ACC_FINAL) {
+                syntheticFieldName = name;
+                syntheticFieldType = desc;
+            }
             return super.visitField(access, name, desc, signature, value);
         }
 
@@ -71,15 +78,19 @@ public class GAletteInstrumentation {
     public static class ModifierMethodWriter extends AdviceAdapter {
 
         private final String className;
+        private final String syntheticFieldName;
+        private final String syntheticFieldType;
         private final String methodName;
         private final Type[] argumentTypes;
 
-        ModifierMethodWriter(int api, String className, MethodVisitor mv, int access, String methodName, String desc, boolean[] proceed) {
+        ModifierMethodWriter(int api, String className, MethodVisitor mv, int access, String methodName, String desc, boolean[] proceed, String syntheticFieldName, String syntheticFieldType) {
             super(api, mv, access, methodName, desc);
             this.className = className;
             this.methodName = methodName;
             this.argumentTypes = Type.getArgumentTypes(desc);
             this.proceed = proceed;
+            this.syntheticFieldName = syntheticFieldName;
+            this.syntheticFieldType = syntheticFieldType;
         }
 
         private final boolean[] proceed;
@@ -156,43 +167,35 @@ public class GAletteInstrumentation {
             // Invoke the tracking method
             // e.g. GAlette.sendAppView(owner, method, argumentValues)
             try {
-                Class<?> type = Class.forName(className.replace('/', '.'));
-                if (Class.forName("com.uphyca.galette.ContextProvider").isAssignableFrom(type)) {
-                    loadThis();
-                    visitTypeInsn(CHECKCAST, "com/uphyca/galette/ContextProvider");
-                    visitMethodInsn(INVOKEINTERFACE, "com/uphyca/galette/ContextProvider", "get", "()Landroid/content/Context;", true);
-                    visitMethodInsn(INVOKEVIRTUAL, "android/content/Context", "getApplicationContext", "()Landroid/content/Context;", false);
-                } else if (Class.forName("android.app.Application").isAssignableFrom(type)) {
-                    loadThis();
-                } else if (Class.forName("android.app.Activity").isAssignableFrom(type)) {
-                    loadThis();
-                    visitTypeInsn(CHECKCAST, "android/app/Activity");
-                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Activity", "getApplication", "()Landroid/app/Application;", false);
-                } else if (Class.forName("android.app.Service").isAssignableFrom(type)) {
-                    loadThis();
-                    visitTypeInsn(CHECKCAST, "android/app/Service");
-                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Service", "getApplication", "()Landroid/app/Application;", false);
-                } else if (Class.forName("android.view.View").isAssignableFrom(type)) {
-                    loadThis();
-                    visitTypeInsn(CHECKCAST, "android/view/View");
-                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/view/View", "getContext", "()Landroid/content/Context;", false);
-                } else if (Class.forName("android.app.Fragment").isAssignableFrom(type)) {
-                    loadThis();
-                    visitTypeInsn(CHECKCAST, "android/app/Fragment");
-                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Fragment", "getActivity", "()Landroid/app/Activity;", false);
-                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Activity", "getApplication", "()Landroid/app/Application;", false);
-                } else if (Class.forName("android.support.v4.app.Fragment").isAssignableFrom(type)) {
-                    loadThis();
-                    visitTypeInsn(CHECKCAST, "android/support/v4/app/Fragment");
-                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/support/v4/app/Fragment", "getActivity", "()Landroid/app/Activity;", false);
-                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Activity", "getApplication", "()Landroid/app/Application;", false);
-                } else if (Class.forName("android.content.Context").isAssignableFrom(type)) {
-                    loadThis();
-                    visitTypeInsn(CHECKCAST, "android/content/Context");
-                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/content/Context", "getApplicationContext", "()Landroid/content/Context;", false);
-                } else {
-                    visitInsn(Opcodes.ACONST_NULL);
-                }
+                final Class<?> type = Class.forName(className.replace('/', '.'));
+                Instruction fallbackInstruction = new Instruction() {
+                    @Override
+                    void proceed() throws ClassNotFoundException {
+                        if (syntheticFieldType != null) {
+                            final Class<?> enclosingType = Class.forName(syntheticFieldType.substring(1, syntheticFieldType.length() - 1).replace('/', '.'));
+                            pushApplication(enclosingType, new Instruction() {
+                                @Override
+                                void proceed() throws ClassNotFoundException {
+                                    loadThis();
+                                    visitFieldInsn(GETFIELD, className, syntheticFieldName, syntheticFieldType);
+                                }
+                            }, new Instruction() {
+                                @Override
+                                void proceed() throws ClassNotFoundException {
+                                    throw new IllegalStateException("Failed to get context from " + enclosingType.getName());
+                                }
+                            });
+                        } else {
+                            throw new IllegalStateException("Failed to get context from " + type.getName());
+                        }
+                    }
+                };
+                pushApplication(type, new Instruction() {
+                    @Override
+                    void proceed() throws ClassNotFoundException {
+                        loadThis();
+                    }
+                }, fallbackInstruction);
                 visitTypeInsn(CHECKCAST, "android/content/Context");
                 storeLocal(contextVariableId);
             } catch (ClassNotFoundException e) {
@@ -206,6 +209,49 @@ public class GAletteInstrumentation {
 
             visitMaxs(0, 0);
             super.onMethodEnter();
+        }
+
+        private void pushApplication(Class<?> type, Instruction op, Instruction defaultOp) throws ClassNotFoundException {
+            if (Class.forName("com.uphyca.galette.ContextProvider").isAssignableFrom(type)) {
+                op.proceed();
+                visitTypeInsn(CHECKCAST, "com/uphyca/galette/ContextProvider");
+                visitMethodInsn(INVOKEINTERFACE, "com/uphyca/galette/ContextProvider", "get", "()Landroid/content/Context;", true);
+                visitMethodInsn(INVOKEVIRTUAL, "android/content/Context", "getApplicationContext", "()Landroid/content/Context;", false);
+            } else if (Class.forName("android.app.Application").isAssignableFrom(type)) {
+                op.proceed();
+            } else if (Class.forName("android.app.Activity").isAssignableFrom(type)) {
+                op.proceed();
+                visitTypeInsn(CHECKCAST, "android/app/Activity");
+                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Activity", "getApplication", "()Landroid/app/Application;", false);
+            } else if (Class.forName("android.app.Service").isAssignableFrom(type)) {
+                op.proceed();
+                visitTypeInsn(CHECKCAST, "android/app/Service");
+                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Service", "getApplication", "()Landroid/app/Application;", false);
+            } else if (Class.forName("android.view.View").isAssignableFrom(type)) {
+                op.proceed();
+                visitTypeInsn(CHECKCAST, "android/view/View");
+                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/view/View", "getContext", "()Landroid/content/Context;", false);
+            } else if (Class.forName("android.app.Fragment").isAssignableFrom(type)) {
+                op.proceed();
+                visitTypeInsn(CHECKCAST, "android/app/Fragment");
+                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Fragment", "getActivity", "()Landroid/app/Activity;", false);
+                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Activity", "getApplication", "()Landroid/app/Application;", false);
+            } else if (Class.forName("android.support.v4.app.Fragment").isAssignableFrom(type)) {
+                op.proceed();
+                visitTypeInsn(CHECKCAST, "android/support/v4/app/Fragment");
+                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/support/v4/app/Fragment", "getActivity", "()Landroid/app/Activity;", false);
+                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Activity", "getApplication", "()Landroid/app/Application;", false);
+            } else if (Class.forName("android.content.Context").isAssignableFrom(type)) {
+                op.proceed();
+                visitTypeInsn(CHECKCAST, "android/content/Context");
+                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/content/Context", "getApplicationContext", "()Landroid/content/Context;", false);
+            } else {
+                defaultOp.proceed();
+            }
+        }
+
+        static abstract class Instruction {
+            abstract void proceed() throws ClassNotFoundException;
         }
 
         /**

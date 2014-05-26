@@ -9,7 +9,6 @@ import android.content.ContextWrapper;
 import android.view.View;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.objectweb.asm.MethodVisitor;
 
 import java.io.File;
@@ -310,36 +309,86 @@ public class GAletteInstrumentationTest {
         }
     }
 
+    @Test
     public void weaveNestedClass() throws Exception {
         // Process classes.
-        GAletteInstrumentation underTest = new GAletteInstrumentation();
-        underTest.processFile(new File(getClass().getResource("GAletteInstrumentationTest$NestedTestClass$TestClassForSendEvent.class").getFile()));
+        processClass("com.uphyca.galette.GAletteInstrumentationTest$NestedTestClass$InnerClass");
 
         // Load instrumented classes.
-        Class<?> testClass = Class.forName("com.uphyca.galette.GAletteInstrumentationTest$NestedTestClass$TestClassForSendEvent");
-        Class<?> enclosingClass = Class.forName("com.uphyca.galette.GAletteInstrumentationTest$NestedTestClass");
-        Object enclosingInstance = enclosingClass.newInstance();
-        Object o = testClass.getDeclaredConstructors()[0].newInstance(enclosingInstance);
+        NestedTestClass instrumentedObject = new NestedTestClass();
+        Application app = new Application();
+        instrumentedObject.attach(app);
 
         // Invoke method.
-        Application app = new Application();
-        ((Activity) o).attach(app);
-        Method method = testClass.getDeclaredMethod("click", new Class[]{});
-        method.invoke(o, new Object[]{});
+        instrumentedObject.click();
 
         // Verify interactions.
-        ArgumentCaptor<Object[]> captor = ArgumentCaptor.forClass(Object[].class);
-        verify(galette).sendEvent(eq(o), eq(app), eq(method), captor.capture());
-        captor.getValue();
+        Method method = instrumentedObject.getClass().getDeclaredClasses()[0].getDeclaredMethod("click", new Class[]{});
+        verify(galette).sendEvent(eq(instrumentedObject.mInner), eq(app), eq(method), eq(new Object[]{}));
     }
 
     static class NestedTestClass extends Activity {
 
-        class TestClassForSendEvent {
+        class InnerClass {
+
             @SendEvent
             void click() {
+
             }
+
+            class InnerInnerClass {
+                @SendEvent
+                void click() {
+                }
+            }
+        }
+
+        InnerClass mInner = new InnerClass();
+
+        void click() {
+            mInner.click();
         }
     }
 
+    @Test(expected = Exception.class)
+    public void weaveNestedNestedClass() throws Exception {
+        // Process classes.
+        processClass("com.uphyca.galette.GAletteInstrumentationTest$NestedNestedTestClass$InnerClass$InnerInnerClass");
+
+//        // Load instrumented classes.
+//        NestedNestedTestClass instrumentedObject = new NestedNestedTestClass();
+//        Application app = new Application();
+//        instrumentedObject.attach(app);
+//
+//        // Invoke method.
+//        instrumentedObject.click();
+//
+//        // Verify interactions.
+//        Method method = instrumentedObject.getClass().getDeclaredClasses()[0].getDeclaredClasses()[0].getDeclaredMethod("click", new Class[]{});
+//        verify(galette).sendEvent(eq(instrumentedObject.mInner.mInnerInner), eq(app), eq(method), eq(new Object[]{}));
+    }
+
+    static class NestedNestedTestClass extends Activity {
+
+        class InnerClass {
+
+            InnerInnerClass mInnerInner = new InnerInnerClass();
+
+            void click() {
+                mInnerInner.click();
+            }
+
+            class InnerInnerClass {
+                @SendEvent
+                void click() {
+                }
+            }
+        }
+
+        InnerClass mInner = new InnerClass();
+
+        void click() {
+            mInner.click();
+        }
+    }
 }
