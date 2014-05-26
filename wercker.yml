@@ -20,6 +20,7 @@ build:
           gradle --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR build install
     - setup-android-emulator:
         target: android-19
+        abi: x86
     - script:
         name: connectedCheck on build-tools-19.0.+
         code: |
