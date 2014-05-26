@@ -3,6 +3,7 @@ box: wercker/android
 build:
   # The steps that will be executed on build
   steps:
+    - wercker/android-sdk-update@0.0.14
     - script:
         name: show base information
         code: |
@@ -12,6 +13,8 @@ build:
           echo $ANDROID_BUILD_TOOLS
           echo $ANDROID_UPDATE_FILTER
           echo $ANDROID_NDK_HOME
+    - android-sdk-update:
+        filter: sysimg-19,extra-android-support,extra-android-m2repository,extra-google-m2repository
     # A step that executes `gradle build` command
     - script:
         name: run gradle
