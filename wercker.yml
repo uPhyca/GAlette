@@ -15,19 +15,19 @@ build:
     - android-sdk-update:
         filter: platform-tools,build-tools-19.0.3,build-tools-19.1.0,android-19,sysimg-19,extra-android-m2repository,extra-google-m2repository
     - script:
-        name: run gradle
+        name: build and install
         code: |
           gradle --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR build install
     - setup-android-emulator:
         target: android-19
     - script:
-        name: run gradle connectedCheck build-tools-19.0.+
+        name: connectedCheck on build-tools-19.0.+
         code: |
-          gradle --project-cache-dir=$WERCKER_CACHE_DIR clean connectedAndroidTest09
+          gradle --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest09
     - script:
-        name: run gradle connectedCheck build-tools-19.1.+
+        name: connectedCheck on build-tools-19.1.+
         code: |
-          gradle --project-cache-dir=$WERCKER_CACHE_DIR clean connectedAndroidTest010
+          gradle --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest010
 after-steps:
     # Use the build results
     - script:
