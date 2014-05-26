@@ -14,11 +14,16 @@ build:
           echo $ANDROID_NDK_HOME
     - android-sdk-update:
         filter: platform-tools,android-19,sysimg-19,extra-android-support,extra-android-m2repository,extra-google-m2repository
-    # A step that executes `gradle build` command
+    - setup-android-emulator:
+        target: android-19
     - script:
         name: run gradle
         code: |
-          gradle --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR build
+          gradle --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR build install
+    - script:
+        name: run gradle connectedCheck
+        code: |
+          gradle --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest09 connectedAndroidTest010
 after-steps:
     # Use the build results
     - script:
