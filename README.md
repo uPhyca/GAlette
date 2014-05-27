@@ -104,16 +104,13 @@ public class MainActivity extends Activity {
         
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
+            @SendEvent(category = "button", action = "click")
             public void onClick(View v) {
                 onButtonClicked();
             }
         });
     }
 
-    @SendEvent(category = "button", action = "click")
-    private void onButtonClicked() {
-        ...
-    }
 }
 ```
 
