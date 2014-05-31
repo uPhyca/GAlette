@@ -239,7 +239,7 @@ public class GAletteInstrumentation {
             } else if (Class.forName("android.support.v4.app.Fragment").isAssignableFrom(type)) {
                 op.proceed();
                 visitTypeInsn(CHECKCAST, "android/support/v4/app/Fragment");
-                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/support/v4/app/Fragment", "getActivity", "()Landroid/app/Activity;", false);
+                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/support/v4/app/Fragment", "getActivity", "()Landroid/support/v4/app/FragmentActivity;", false);
                 visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/app/Activity", "getApplication", "()Landroid/app/Application;", false);
             } else if (Class.forName("android.content.Context").isAssignableFrom(type)) {
                 op.proceed();
