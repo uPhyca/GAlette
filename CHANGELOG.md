@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 0.9.6 *(2014-05-31)*
+----------------------------
+
+- Fix: runtime error occurs using with support-v4 fragment
+
+
 Version 0.9.5 *(2014-05-28)*
 ----------------------------
 
