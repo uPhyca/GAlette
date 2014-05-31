@@ -1,19 +1,17 @@
 package android.support.v4.app;
 
-import android.app.Activity;
-
 /**
  * Stub
  */
 public class Fragment {
 
-    private Activity mActivity;
+    private FragmentActivity mActivity;
 
-    public Activity getActivity() {
+    public FragmentActivity getActivity() {
         return mActivity;
     }
 
-    public void setActivity(Activity activity) {
+    public void setActivity(FragmentActivity activity) {
         mActivity = activity;
     }
 }

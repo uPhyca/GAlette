@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.Service;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import org.junit.Before;
 import org.junit.Test;
@@ -290,7 +291,7 @@ public class GAletteInstrumentationTest {
         // Load instrumented classes.
         TestSupportFragmentClass instrumentedObject = new TestSupportFragmentClass();
         Application app = new Application();
-        Activity activity = new Activity();
+        FragmentActivity activity = new FragmentActivity();
         activity.attach(app);
         instrumentedObject.setActivity(activity);
 
