@@ -13,4 +13,4 @@ project(':plugin').name = 'galette-plugin'
 //include 'example'
 //project(':example').name = 'example'
 
-project(':').name = 'android-galette-parent'
+project(':').name = 'galette-parent'
