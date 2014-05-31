@@ -1,4 +1,4 @@
-[![wercker status](https://app.wercker.com/status/da37f33da36130c5cda62f25542f0640/m "wercker status")](https://app.wercker.com/project/bykey/da37f33da36130c5cda62f25542f0640)
+[![wercker status](https://app.wercker.com/status/da37f33da36130c5cda62f25542f0640/s "wercker status")](https://app.wercker.com/project/bykey/da37f33da36130c5cda62f25542f0640)
 
 
 # GAlette
