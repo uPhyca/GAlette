@@ -194,7 +194,7 @@ public class MyClass implements ContextProvider {
         return mContext;
     }
     
-    @SendScreenView(screenName = "my-class')
+    @SendAppView(screenName = "my-class")
     void foo() {
     }
 }
