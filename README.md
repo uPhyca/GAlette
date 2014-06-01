@@ -157,7 +157,7 @@ public class MainActivity extends Activity {
         ...
     }
 
-    public static class BundleValueFieldBuilder extends FieldBuilder<String> {
+    public static class BundleValueFieldBuilder implements FieldBuilder<String> {
         @Override
         public String build(Fields fields, String fieldValue, Object declaredObject, Method method, Object[] arguments) {
             // annotation's screenName value paths to fieldValue, in this case 'foo'
