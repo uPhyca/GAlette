@@ -167,6 +167,40 @@ public class MainActivity extends Activity {
 }
 ```
 
+### Supported types
+
+Following types or these subclasses are supported.
+
+- Application
+- Activity
+- Service
+- Fragment (android.app or android.support.v4.app)
+- View
+- Context
+
+or implements ContextProvider to orbitary classes.
+
+```Java
+public class MyClass implements ContextProvider {
+
+    private Context mContext;
+    
+    public MyClass(Context context) {
+        mContext = context;
+    }
+    
+    @Override
+    public Context get() {
+        return mContext;
+    }
+    
+    @SendScreenView(screenName = "my-class')
+    void foo() {
+    }
+}
+```
+
+
 ## Proguard
 
 ```
