@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 0.9.7 *(2014-06-02)*
+----------------------------
+
+- Fix: runtime error occurs using with view
+
+
 Version 0.9.6 *(2014-05-31)*
 ----------------------------
 
