@@ -159,8 +159,14 @@ public class GAletteInstrumentationTest {
         processClass("com.uphyca.galette.GAletteInstrumentationTest$TestViewClass");
 
         // Load instrumented classes.
-        Application app = new Application();
-        TestViewClass instrumentedObject = new TestViewClass(app);
+        final Application app = new Application();
+        Context context = new ContextWrapper(app){
+            @Override
+            public Context getApplicationContext() {
+                return app;
+            }
+        };
+        TestViewClass instrumentedObject = new TestViewClass(context);
 
         // Invoke method.
         instrumentedObject.click();
