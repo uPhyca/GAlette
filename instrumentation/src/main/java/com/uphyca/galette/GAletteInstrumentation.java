@@ -231,6 +231,7 @@ public class GAletteInstrumentation {
                 op.proceed();
                 visitTypeInsn(CHECKCAST, "android/view/View");
                 visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/view/View", "getContext", "()Landroid/content/Context;", false);
+                visitMethodInsn(Opcodes.INVOKEVIRTUAL, "android/content/Context", "getApplicationContext", "()Landroid/content/Context;", false);
             } else if (Class.forName("android.app.Fragment").isAssignableFrom(type)) {
                 op.proceed();
                 visitTypeInsn(CHECKCAST, "android/app/Fragment");
