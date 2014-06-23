@@ -1,5 +1,6 @@
 package com.uphyca.galette
 
+import org.gradle.api.GradleException
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import org.gradle.api.Plugin
@@ -19,7 +20,7 @@ class GAlettePlugin implements Plugin<Project> {
             variants = project.android.libraryVariants
             plugin = project.plugins.getPlugin(LibraryPlugin)
         } else {
-            throw new IllegalStateException("The 'android' or 'android-library' plugin is required.")
+            throw new GradleException("The 'android' or 'android-library' plugin is required.")
         }
 
         project.configurations.create('galette')
@@ -43,7 +44,7 @@ class GAlettePlugin implements Plugin<Project> {
                     plugin.runtimeJarList.each { classpath += project.files(it) }
                 } else if (project.android.properties['bootClasspath']) {
                     // 0.10
-                    project.android.bootClasspath.each { classpath += project.files(it) }
+                    plugin.bootClasspath.each { classpath += project.files(it) }
                 }
                 classpath += javaCompile.classpath
                 classpath += project.configurations["galette"]

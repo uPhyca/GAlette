@@ -4,7 +4,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.11.+'
         classpath 'com.uphyca.galette:galette-plugin:0.9.8-SNAPSHOT'
     }
 }
@@ -17,7 +17,7 @@ def preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion "19.1"
 
     dexOptions {
         // Skip pre-dexing when running on Wercker CI or when disabled via -Dpre-dex=false.
@@ -36,6 +36,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
 }
 
 repositories {
@@ -51,8 +52,4 @@ dependencies {
     androidTestCompile "com.google.dexmaker:dexmaker:1.1"
     androidTestCompile ("com.google.dexmaker:dexmaker-mockito:1.1") { exclude group: 'org.mockito' }
     androidTestCompile "com.squareup:fest-android:1.0.+"
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.10'
 }
