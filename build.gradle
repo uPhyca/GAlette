@@ -29,19 +29,19 @@ task wrapper(type: Wrapper) {
 }
 
 task cleanExample(type: Exec) {
-    executable = 'gradle'
+    executable = './gradlew'
     workingDir = project.file('example')
     args = [ 'clean' ]
 }
 
 task assembleExample(type: Exec) {
-    executable = 'gradle'
+    executable = './gradlew'
     workingDir = project.file('example')
     args = [ 'assemble' ]
 }
 
 task installExample(type: Exec) {
-    executable = 'gradle'
+    executable = './gradlew'
     workingDir = project.file('example')
     args = [ 'installDebug' ]
 }
@@ -65,38 +65,57 @@ task connectedAndroidTest09(type: Exec) {
 }
 
 task cleanTest010(type: Exec) {
-    executable = 'gradle'
+    executable = './gradlew'
     workingDir = project.file('tests010')
     args = [ 'clean' ]
 }
 
 task assembleTest010(type: Exec) {
-    executable = 'gradle'
+    executable = './gradlew'
     workingDir = project.file('tests010')
     args = [ 'assemble' ]
 }
 
 task connectedAndroidTest010(type: Exec) {
-    executable = 'gradle'
+    executable = './gradlew'
     workingDir = project.file('tests010')
     args = [ 'connectedAndroidTest' ]
 }
 
 
 task cleanTest011(type: Exec) {
-    executable = 'gradle'
+    executable = './gradlew'
     workingDir = project.file('tests011')
     args = [ 'clean' ]
 }
 
 task assembleTest011(type: Exec) {
-    executable = 'gradle'
+    executable = './gradlew'
     workingDir = project.file('tests011')
     args = [ 'assemble' ]
 }
 
 task connectedAndroidTest011(type: Exec) {
-    executable = 'gradle'
+    executable = './gradlew'
     workingDir = project.file('tests011')
+    args = [ 'connectedAndroidTest' ]
+}
+
+
+task cleanTest012(type: Exec) {
+    executable = './gradlew'
+    workingDir = project.file('tests012')
+    args = [ 'clean' ]
+}
+
+task assembleTest012(type: Exec) {
+    executable = './gradlew'
+    workingDir = project.file('tests012')
+    args = [ 'assemble' ]
+}
+
+task connectedAndroidTest012(type: Exec) {
+    executable = './gradlew'
+    workingDir = project.file('tests012')
     args = [ 'connectedAndroidTest' ]
 }

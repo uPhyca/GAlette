@@ -9,6 +9,10 @@ buildscript {
     }
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.10'
+}
+
 apply plugin: 'android-library'
 apply plugin: 'galette'
 

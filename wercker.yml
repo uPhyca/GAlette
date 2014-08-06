@@ -20,15 +20,22 @@ build:
           gradle --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR build install
     - setup-android-emulator:
         target: android-19
-        abi: x86
     - script:
-        name: connectedCheck on build-tools-19.0.+
+        name: connectedCheck on plugin version 0.9
         code: |
           gradle --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest09
     - script:
-        name: connectedCheck on build-tools-19.1.+
+        name: connectedCheck on plugin version 0.10
         code: |
           gradle --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest010
+    - script:
+        name: connectedCheck on plugin version 0.11
+        code: |
+          gradle --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest011
+    - script:
+        name: connectedCheck on plugin version 0.12
+        code: |
+          gradle --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest012
 after-steps:
     # Use the build results
     - script:
