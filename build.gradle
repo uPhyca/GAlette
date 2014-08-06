@@ -1,6 +1,6 @@
 project.ext {
     supportVersion = '19.1.+'
-    playServicesVersion = '4.4.+'
+    playServicesVersion = '5.0.+'
     asmVersion = '5.0.2'
 }
 
