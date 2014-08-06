@@ -13,7 +13,7 @@ build:
           echo $ANDROID_UPDATE_FILTER
           echo $ANDROID_NDK_HOME
     - android-sdk-update:
-        filter: platform-tools,build-tools-19.0.3,build-tools-19.1.0,android-19,sysimg-19,extra-android-m2repository,extra-google-m2repository
+        filter: platform-tools,build-tools-19.0.3,build-tools-19.1.0,build-tools-20.0.0,android-19,sysimg-19,extra-android-m2repository,extra-google-m2repository
     - script:
         name: build and install
         code: |
