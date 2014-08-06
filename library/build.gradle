@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle:0.10.+'
         classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'
     }
 }
@@ -59,4 +59,5 @@ task install(type: Exec, dependsOn: assemble) {
     ]
 }
 
-apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+//apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/44a1e74d01afd31ae1b78e6d85d1ab992295bb82/gradle-mvn-push.gradle'
