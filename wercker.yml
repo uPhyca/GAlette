@@ -13,7 +13,7 @@ build:
           echo $ANDROID_UPDATE_FILTER
           echo $ANDROID_NDK_HOME
     - android-sdk-update:
-        filter: platform-tools,build-tools-19.0.3,build-tools-19.1.0,build-tools-20.0.0,android-19,sysimg-19,extra-android-m2repository,extra-google-m2repository
+        filter: platform-tools,build-tools-21.1.1,android-21,sys-img-armeabi-v7a-android-19,extra-android-m2repository,extra-google-m2repository
     - script:
         name: build and install
         code: |
@@ -21,21 +21,9 @@ build:
     - setup-android-emulator:
         target: android-19
     - script:
-        name: connectedCheck on plugin version 0.9
+        name: connectedCheck
         code: |
-          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest09
-    - script:
-        name: connectedCheck on plugin version 0.10
-        code: |
-          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest010
-    - script:
-        name: connectedCheck on plugin version 0.11
-        code: |
-          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest011
-    - script:
-        name: connectedCheck on plugin version 0.12
-        code: |
-          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest012
+          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest
 after-steps:
     # Use the build results
     - script:
