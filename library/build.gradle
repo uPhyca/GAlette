@@ -1,24 +1,22 @@
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.10.+'
-        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'
+        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.3'
     }
 }
 
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 sourceSets {
     main { compileClasspath += configurations.provided }
 }
 
-
-
 def isWercker = "true".equals(System.getenv("WERCKER"))
 def preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.1"
 
     dexOptions {
         // Skip pre-dexing when running on Wercker CI or when disabled via -Dpre-dex=false.
@@ -26,7 +24,7 @@ android {
     }
 
     defaultConfig {
-        targetSdkVersion 19
+        targetSdkVersion 21
         minSdkVersion 9
     }
 
@@ -41,7 +39,6 @@ android {
     }
 }
 
-
 dependencies {
     provided "com.android.support:support-v4:${supportVersion}"
     compile "com.google.android.gms:play-services-base:${playServicesVersion}@aar"
@@ -55,9 +52,9 @@ task install(type: Exec, dependsOn: assemble) {
             "-DartifactId=galette",
             "-Dversion=${VERSION_NAME}",
             "-Dpackaging=aar",
-            "-Dfile=build/libs/galette.aar"
+            "-Dfile=build/outputs/aar/galette-release.aar"
     ]
 }
 
-//apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
-apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/44a1e74d01afd31ae1b78e6d85d1ab992295bb82/gradle-mvn-push.gradle'
+apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+//apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/44a1e74d01afd31ae1b78e6d85d1ab992295bb82/gradle-mvn-push.gradle'

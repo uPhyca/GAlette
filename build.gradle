@@ -1,5 +1,5 @@
 project.ext {
-    supportVersion = '19.1.+'
+    supportVersion = '21.0.+'
     playServicesVersion = '6.5.+'
     asmVersion = '5.0.2'
 }
@@ -7,12 +7,14 @@ project.ext {
 allprojects {
     buildscript {
         repositories {
+            jcenter()
             mavenCentral()
         }
     }
 
     dependencies {
         repositories {
+            jcenter()
             mavenCentral()
             mavenLocal()
         }
@@ -25,7 +27,7 @@ allprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.10'
+    gradleVersion = '2.2.1'
 }
 
 task cleanExample(type: Exec) {
@@ -63,44 +65,6 @@ task connectedAndroidTest09(type: Exec) {
     workingDir = project.file('tests09')
     args = [ 'connectedAndroidTest' ]
 }
-
-task cleanTest010(type: Exec) {
-    executable = './gradlew'
-    workingDir = project.file('tests010')
-    args = [ 'clean' ]
-}
-
-task assembleTest010(type: Exec) {
-    executable = './gradlew'
-    workingDir = project.file('tests010')
-    args = [ 'assemble' ]
-}
-
-task connectedAndroidTest010(type: Exec) {
-    executable = './gradlew'
-    workingDir = project.file('tests010')
-    args = [ 'connectedAndroidTest' ]
-}
-
-
-task cleanTest011(type: Exec) {
-    executable = './gradlew'
-    workingDir = project.file('tests011')
-    args = [ 'clean' ]
-}
-
-task assembleTest011(type: Exec) {
-    executable = './gradlew'
-    workingDir = project.file('tests011')
-    args = [ 'assemble' ]
-}
-
-task connectedAndroidTest011(type: Exec) {
-    executable = './gradlew'
-    workingDir = project.file('tests011')
-    args = [ 'connectedAndroidTest' ]
-}
-
 
 task cleanTest012(type: Exec) {
     executable = './gradlew'
