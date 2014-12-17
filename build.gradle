@@ -48,38 +48,20 @@ task installExample(type: Exec) {
     args = [ 'installDebug' ]
 }
 
-task cleanTest09(type: Exec) {
+task cleanTest(type: Exec) {
     executable = './gradlew'
-    workingDir = project.file('tests09')
+    workingDir = project.file('tests')
     args = [ 'clean' ]
 }
 
-task assembleTest09(type: Exec) {
+task assembleTest(type: Exec) {
     executable = './gradlew'
-    workingDir = project.file('tests09')
+    workingDir = project.file('tests')
     args = [ 'assemble' ]
 }
 
-task connectedAndroidTest09(type: Exec) {
+task connectedAndroidTest(type: Exec) {
     executable = './gradlew'
-    workingDir = project.file('tests09')
-    args = [ 'connectedAndroidTest' ]
-}
-
-task cleanTest012(type: Exec) {
-    executable = './gradlew'
-    workingDir = project.file('tests012')
-    args = [ 'clean' ]
-}
-
-task assembleTest012(type: Exec) {
-    executable = './gradlew'
-    workingDir = project.file('tests012')
-    args = [ 'assemble' ]
-}
-
-task connectedAndroidTest012(type: Exec) {
-    executable = './gradlew'
-    workingDir = project.file('tests012')
+    workingDir = project.file('tests')
     args = [ 'connectedAndroidTest' ]
 }
