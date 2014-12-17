@@ -13,13 +13,13 @@ build:
           echo $ANDROID_UPDATE_FILTER
           echo $ANDROID_NDK_HOME
     - android-sdk-update:
-        filter: platform-tools,build-tools-21.1.1,android-21,sys-img-armeabi-v7a-android-21,extra-android-m2repository,extra-google-m2repository
+        filter: platform-tools,build-tools-21.1.1,android-21,sys-img-armeabi-v7a-android-19,extra-android-m2repository,extra-google-m2repository
     - script:
         name: build and install
         code: |
           ./gradlew --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR build install
     - setup-android-emulator:
-        target: android-21
+        target: android-19
     - script:
         name: connectedCheck
         code: |
