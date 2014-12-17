@@ -40,8 +40,7 @@ android {
 }
 
 dependencies {
-    provided "com.android.support:support-v4:${supportVersion}"
-    compile "com.google.android.gms:play-services-base:${playServicesVersion}@aar"
+    compile "com.google.android.gms:play-services-base:${playServicesVersion}"
 }
 
 task install(type: Exec, dependsOn: assemble) {
