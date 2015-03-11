@@ -28,6 +28,10 @@ Before using GAlette, make sure you have done following instructions described i
 Add the GAlette plugin to your `buildscript`'s `dependencies` section and apply the plugin:
 ```groovy
 buildscript {
+    repositories {
+        ...
+        mavenCentral()
+    }
     dependencies {
         ...
         classpath 'com.uphyca.galette:galette-plugin:0.9.+'
