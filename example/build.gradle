@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.0'
-        classpath 'com.uphyca.galette:galette-plugin:0.9.10-SNAPSHOT'
+        classpath 'com.uphyca.galette:galette-plugin:0.9.10'
     }
 }
 
