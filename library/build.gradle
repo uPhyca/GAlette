@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.2.3'
         classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.3'
     }
 }
@@ -15,8 +15,8 @@ def isWercker = "true".equals(System.getenv("WERCKER"))
 def preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
 
     dexOptions {
         // Skip pre-dexing when running on Wercker CI or when disabled via -Dpre-dex=false.
@@ -24,7 +24,7 @@ android {
     }
 
     defaultConfig {
-        targetSdkVersion 21
+        targetSdkVersion 22
         minSdkVersion 9
     }
 
@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    compile "com.google.android.gms:play-services-base:${playServicesVersion}"
+    compile "com.google.android.gms:play-services-analytics:${playServicesVersion}"
 }
 
 task install(type: Exec, dependsOn: assemble) {
