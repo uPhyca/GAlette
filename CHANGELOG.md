@@ -4,7 +4,7 @@ Change Log
 Version 0.9.11 *(2015-05-25)*
 ----------------------------
 
-- Updated: Support Google Play Services 7.3.0
+- Updated: Google Play Services 7.3.0
 
 
 Version 0.9.10 *(2015-03-11)*
@@ -22,7 +22,7 @@ Version 0.9.9 *(2014-12-17)*
 Version 0.9.8 *(2014-12-17)*
 ----------------------------
 
-- New: Support Google Play Services 6.5
+- Updated: Google Play Services 6.5
 
 
 Version 0.9.7 *(2014-06-02)*
@@ -48,7 +48,7 @@ Version 0.9.4 *(2014-05-23)*
 ----------------------------
 
 - New: Support Android Gradle Plugin 0.10
-- New: Support Google Play Services 4.4
+- Updated: Google Play Services 4.4
 
 
 Version 0.9.3 *(2014-05-20)*
