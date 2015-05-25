@@ -14,7 +14,16 @@ public class MyApplication extends Application implements TrackerProvider {
     public void onCreate() {
         super.onCreate();
         GoogleAnalytics ga = GoogleAnalytics.getInstance(this);
-        ga.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+        ga.setLocalDispatchPeriod(1);
+
+        // To enable debug logging on a device run:
+        // adb shell setprop log.tag.GAv4 DEBUG
+        // adb logcat -s GAv4
+
+        // Logger is deprecated. To enable debug logging, please run:
+        // adb shell setprop log.tag.GAv4 DEBUG
+        // ga.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+
         mTracker = ga.newTracker("SET-YOUR-TRACKING-ID");
     }
 

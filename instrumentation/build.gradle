@@ -25,7 +25,7 @@ dependencies {
     compile "org.ow2.asm:asm-all:${asmVersion}"
 
     testCompile 'junit:junit:4.11'
-    testCompile 'org.mockito:mockito-all:1.9.5'
+    testCompile 'org.mockito:mockito-all:1.10.19'
     testCompile 'org.easytesting:fest-assert-core:2.0M10'
 }
 
