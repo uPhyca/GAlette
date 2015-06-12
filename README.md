@@ -82,13 +82,13 @@ Declare your application in AndroidManifest.xml.
 
 ## Send Screen View
 
-Annotate @SendAppView to your methods to track appView
+Annotate @SendScreenView to your methods to track appView
 
 ```java
 public class MainActivity extends Activity {
 
     @Override
-    @SendAppView(screenName = "main")
+    @SendScreenView(screenName = "main")
     protected void onCreate(Bundle savedInstanceState) {
         ...
     }
@@ -156,7 +156,7 @@ Use FieldBuilder to build each field value
 public class MainActivity extends Activity {
 
     @Override
-    @SendAppView(screenName = "foo", screenNameBuilder = BundleValueFieldBuilder.class)
+    @SendScreenView(screenName = "foo", screenNameBuilder = BundleValueFieldBuilder.class)
     protected void onCreate(Bundle savedInstanceState) {
         ...
     }
@@ -241,7 +241,7 @@ public class MyClass implements ContextProvider {
         return mContext;
     }
     
-    @SendAppView(screenName = "my-class")
+    @SendScreenView(screenName = "my-class")
     void foo() {
     }
 }
@@ -252,7 +252,7 @@ public class MyClass implements ContextProvider {
 
 ```
 -keepclassmembernames class * {
-    @com.uphyca.galette.SendAppView *;
+    @com.uphyca.galette.SendScreenView *;
     @com.uphyca.galette.SendEvent *;
 }
 ```
