@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Version 0.9.12 *(2015-06-12)*
+----------------------------
+
+- Updated: Google Play Services 7.5.0
+- New @SendScreenView annotation, @SendAppView is now deperacated
+- New HitInterceptor to send arbitary values
+
+
 Version 0.9.11 *(2015-05-25)*
 ----------------------------
 
