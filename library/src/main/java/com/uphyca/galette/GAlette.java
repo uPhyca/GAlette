@@ -39,12 +39,33 @@ public class GAlette {
         return INSTANCE;
     }
 
+    public static void sendScreenView(Object target, Context appContext, Method method, Object[] arguments) {
+        getInsntance().sendScreenView0(target, appContext, method, arguments);
+    }
+
     public static void sendAppView(Object target, Context appContext, Method method, Object[] arguments) {
         getInsntance().sendAppView0(target, appContext, method, arguments);
     }
 
     public static void sendEvent(Object target, Context appContext, Method method, Object[] arguments) {
         getInsntance().sendEvent0(target, appContext, method, arguments);
+    }
+
+    private void sendScreenView0(Object target, Context appContext, Method method, Object[] arguments) {
+        final SendScreenView analyticsAnnotation = method.getAnnotation(SendScreenView.class);
+        final Tracker tracker = trackerFrom(appContext, analyticsAnnotation.trackerName());
+        if (tracker == null) {
+            return;
+        }
+
+        final HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder();
+        try {
+            final FieldBuilder<String> screenNameBuilder = createStringFieldBuilder(analyticsAnnotation.screenNameBuilder());
+            final String screenName = screenNameBuilder.build(Fields.SCREEN_NAME, analyticsAnnotation.screenName(), target, method, arguments);
+            tracker.setScreenName(screenName);
+        } finally {
+            tracker.send(builder.build());
+        }
     }
 
     private void sendAppView0(Object target, Context appContext, Method method, Object[] arguments) {
@@ -54,7 +75,7 @@ public class GAlette {
             return;
         }
 
-        final HitBuilders.AppViewBuilder builder = new HitBuilders.AppViewBuilder();
+        final HitBuilders.ScreenViewBuilder builder = new HitBuilders.ScreenViewBuilder();
         try {
             final FieldBuilder<String> screenNameBuilder = createStringFieldBuilder(analyticsAnnotation.screenNameBuilder());
             final String screenName = screenNameBuilder.build(Fields.SCREEN_NAME, analyticsAnnotation.screenName(), target, method, arguments);

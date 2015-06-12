@@ -82,6 +82,30 @@ public class GAletteInstrumentationTest {
         }
     }
 
+    @Test
+    public void weaveSendScreenView() throws Exception {
+        // Process classes.
+        processClass("com.uphyca.galette.GAletteInstrumentationTest$TestClassForSendScreenView");
+
+        // Load instrumented classes.
+        TestClassForSendScreenView instrumentedObject = new TestClassForSendScreenView();
+        Application app = new Application();
+        instrumentedObject.attach(app);
+
+        // Invoke method.
+        instrumentedObject.show();
+
+        // Verify interactions.
+        Method method = instrumentedObject.getClass().getDeclaredMethod("show", new Class[]{});
+        verify(galette).sendScreenView(eq(instrumentedObject), eq(app), eq(method), eq(new Object[]{}));
+    }
+
+    static class TestClassForSendScreenView extends Activity {
+        @SendScreenView
+        void show() {
+        }
+    }
+
 
     @Test
     public void weaveSendEvent() throws Exception {
