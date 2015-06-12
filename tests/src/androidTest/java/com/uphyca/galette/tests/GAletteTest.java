@@ -7,7 +7,9 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.uphyca.galette.TrackerProvider;
 import org.mockito.InOrder;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.io.File;
 
@@ -33,7 +35,6 @@ public class GAletteTest extends ActivityUnitTestCase<TestActivity> {
     public void setUp() throws Exception {
         super.setUp();
         ensureDexmakerCacheDir();
-
         mTracker = mock(Tracker.class);
         setApplication(new MockApplication());
     }
@@ -44,13 +45,13 @@ public class GAletteTest extends ActivityUnitTestCase<TestActivity> {
         System.setProperty("dexmaker.dexcache", cacheDir.toString());
     }
 
-    public void testSendAppView() throws Exception {
+    public void testSendScreenView() throws Exception {
         startActivity(new Intent(Intent.ACTION_MAIN), null, null);
         verify(mTracker).setScreenName("screenName");
         verify(mTracker).send(new HitBuilders.AppViewBuilder().build());
     }
 
-    public void testSendAppViewWithBuilders() throws Exception {
+    public void testSendScreenViewWithBuilders() throws Exception {
         TestActivity testActivity = startActivity(new Intent(Intent.ACTION_MAIN), null, null);
         testActivity.screenNameWithBuilders();
 

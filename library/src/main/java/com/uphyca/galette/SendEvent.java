@@ -31,9 +31,9 @@ public @interface SendEvent {
 
     String trackerName() default "";
 
-    String category();
+    String category() default "";
 
-    String action();
+    String action() default "";
 
     String label() default "";
 

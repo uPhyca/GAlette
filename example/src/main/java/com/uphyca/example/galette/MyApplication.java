@@ -1,14 +1,29 @@
 package com.uphyca.example.galette;
 
 import android.app.Application;
+import android.os.Build;
+
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
+import com.uphyca.galette.HitInterceptor;
 import com.uphyca.galette.TrackerProvider;
 
-public class MyApplication extends Application implements TrackerProvider {
+public class MyApplication extends Application implements TrackerProvider, HitInterceptor.Provider {
 
     private Tracker mTracker;
+
+    private HitInterceptor hitInterceptor = new HitInterceptor() {
+        @Override
+        public void onEvent(EventFacade eventFacade) {
+            eventFacade.setCustomDimension(1, Build.MODEL);
+        }
+
+        @Override
+        public void onScreenView(ScreenViewFacade screenViewFacade) {
+            screenViewFacade.setCustomDimension(1, Build.MODEL);
+        }
+    };
 
     @Override
     public void onCreate() {
@@ -30,5 +45,10 @@ public class MyApplication extends Application implements TrackerProvider {
     @Override
     public Tracker getByName(String trackerName) {
         return mTracker;
+    }
+
+    @Override
+    public HitInterceptor getHitInterceptor(String trackerName) {
+        return hitInterceptor;
     }
 }

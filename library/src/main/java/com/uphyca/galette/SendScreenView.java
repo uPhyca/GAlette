@@ -31,7 +31,7 @@ public @interface SendScreenView {
 
     String trackerName() default "";
 
-    String screenName();
+    String screenName() default "";
 
     Class<? extends FieldBuilder<String>> screenNameBuilder() default StringFieldBuilder.class;
 }

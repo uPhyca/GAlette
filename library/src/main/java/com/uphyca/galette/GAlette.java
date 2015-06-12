@@ -63,6 +63,8 @@ public class GAlette {
             final FieldBuilder<String> screenNameBuilder = createStringFieldBuilder(analyticsAnnotation.screenNameBuilder());
             final String screenName = screenNameBuilder.build(Fields.SCREEN_NAME, analyticsAnnotation.screenName(), target, method, arguments);
             tracker.setScreenName(screenName);
+            HitInterceptor hitInterceptor = hitInterceptorFrom(appContext, analyticsAnnotation.trackerName());
+            hitInterceptor.onScreenView(new ScreenViewBuilderDelegate(builder));
         } finally {
             tracker.send(builder.build());
         }
@@ -80,6 +82,8 @@ public class GAlette {
             final FieldBuilder<String> screenNameBuilder = createStringFieldBuilder(analyticsAnnotation.screenNameBuilder());
             final String screenName = screenNameBuilder.build(Fields.SCREEN_NAME, analyticsAnnotation.screenName(), target, method, arguments);
             tracker.setScreenName(screenName);
+            HitInterceptor hitInterceptor = hitInterceptorFrom(appContext, analyticsAnnotation.trackerName());
+            hitInterceptor.onScreenView(new ScreenViewBuilderDelegate(builder));
         } finally {
             tracker.send(builder.build());
         }
@@ -113,6 +117,8 @@ public class GAlette {
             if (value != null) {
                 builder.setValue(value);
             }
+            HitInterceptor hitInterceptor = hitInterceptorFrom(appContext, analyticsAnnotation.trackerName());
+            hitInterceptor.onEvent(new EventBuilderDelegate(builder));
         } finally {
             tracker.send(builder.build());
         }
@@ -174,8 +180,28 @@ public class GAlette {
         return null;
     }
 
+    private static HitInterceptor hitInterceptorFrom(Context appContext, String trackerName) {
+        if(appContext instanceof HitInterceptor.Provider) {
+            return ((HitInterceptor.Provider) appContext).getHitInterceptor(trackerName);
+        }
+        if(appContext instanceof HitInterceptor) {
+            return (HitInterceptor) appContext;
+        }
+        return EMPTY_HIT_INTERCEPTOR;
+    }
+
     @Target(ElementType.TYPE)
     @Retention(CLASS)
     private @interface Baked {
     }
+
+    private static final HitInterceptor EMPTY_HIT_INTERCEPTOR = new HitInterceptor() {
+        @Override
+        public void onEvent(EventFacade event) {
+        }
+
+        @Override
+        public void onScreenView(ScreenViewFacade screenView) {
+        }
+    };
 }
