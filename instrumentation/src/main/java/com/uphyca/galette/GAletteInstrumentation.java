@@ -101,6 +101,8 @@ public class GAletteInstrumentation {
             AnnotationVisitor av = super.visitAnnotation(desc, visible);
             if (desc.equals("Lcom/uphyca/galette/SendAppView;")) {
                 trackingMethodName = "sendAppView";
+            } else if (desc.equals("Lcom/uphyca/galette/SendScreenView;")) {
+                trackingMethodName = "sendScreenView";
             } else if (desc.equals("Lcom/uphyca/galette/SendEvent;")) {
                 trackingMethodName = "sendEvent";
             }
@@ -165,7 +167,7 @@ public class GAletteInstrumentation {
             storeLocal(methodVariableId);
 
             // Invoke the tracking method
-            // e.g. GAlette.sendAppView(owner, method, argumentValues)
+            // e.g. GAlette.sendScreenView(owner, method, argumentValues)
             try {
                 final Class<?> type = Class.forName(className.replace('/', '.'));
                 Instruction fallbackInstruction = new Instruction() {

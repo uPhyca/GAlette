@@ -13,6 +13,8 @@ public class GAlette {
         void sendAppView(Object target, Context context, Method method, Object[] arguments);
 
         void sendEvent(Object target, Context context, Method method, Object[] arguments);
+
+        void sendScreenView(Object target, Context context, Method method, Object[] arguments);
     }
 
     private static IGAlette sIGAlette;
@@ -23,6 +25,10 @@ public class GAlette {
 
     static void sendAppView(Object target, Context context, Method method, Object[] arguments) {
         sIGAlette.sendAppView(target, context, method, arguments);
+    }
+
+    static void sendScreenView(Object target, Context context, Method method, Object[] arguments) {
+        sIGAlette.sendScreenView(target, context, method, arguments);
     }
 
     static void sendEvent(Object target, Context context, Method method, Object[] arguments) {

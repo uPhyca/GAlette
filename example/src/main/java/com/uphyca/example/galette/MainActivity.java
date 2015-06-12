@@ -21,8 +21,8 @@ import android.os.Bundle;
 import android.view.View;
 import com.uphyca.galette.Fields;
 import com.uphyca.galette.LongFieldBuilder;
-import com.uphyca.galette.SendAppView;
 import com.uphyca.galette.SendEvent;
+import com.uphyca.galette.SendScreenView;
 
 import java.lang.reflect.Method;
 
@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
      * Annotate arbitrary method to track
      */
     @Override
-    @SendAppView(screenName = "main")
+    @SendScreenView(screenName = "main")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

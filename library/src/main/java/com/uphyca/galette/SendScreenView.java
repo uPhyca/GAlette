@@ -23,13 +23,11 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * @see com.google.android.gms.analytics.HitBuilders.AppViewBuilder
- * @deprecated Use {@link SendScreenView} instead.
+ * @see com.google.android.gms.analytics.HitBuilders.ScreenViewBuilder
  */
 @Target(ElementType.METHOD)
 @Retention(RUNTIME)
-@Deprecated
-public @interface SendAppView {
+public @interface SendScreenView {
 
     String trackerName() default "";
 
