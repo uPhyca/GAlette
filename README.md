@@ -171,6 +171,49 @@ public class MainActivity extends Activity {
 }
 ```
 
+
+### Interceptor
+
+Use HitInterceptor to send arbitary values
+
+```java
+public class MyApplication extends Application implements TrackerProvider, HitInterceptor.Provider {
+
+    private Tracker mTracker;
+
+    private HitInterceptor hitInterceptor = new HitInterceptor() {
+        @Override
+        public void onEvent(EventFacade eventFacade) {
+            eventFacade.setCustomDimension(1, Build.MODEL);
+        }
+
+        @Override
+        public void onScreenView(ScreenViewFacade screenViewFacade) {
+            screenViewFacade.setCustomDimension(1, Build.MODEL);
+        }
+    };
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        GoogleAnalytics ga = GoogleAnalytics.getInstance(this);
+        ga.setLocalDispatchPeriod(1);
+        mTracker = ga.newTracker("SET-YOUR-TRACKING-ID");
+    }
+
+    @Override
+    public Tracker getByName(String trackerName) {
+        return mTracker;
+    }
+
+    @Override
+    public HitInterceptor getHitInterceptor(String trackerName) {
+        return hitInterceptor;
+    }
+}
+```
+
+
 ### Supported types
 
 Following types or these subclasses are supported.

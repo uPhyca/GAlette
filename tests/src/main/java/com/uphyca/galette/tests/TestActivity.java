@@ -8,13 +8,13 @@ import java.lang.reflect.Method;
 
 public class TestActivity extends Activity {
 
-    @SendAppView(screenName = "screenName")
+    @SendScreenView(screenName = "screenName")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    @SendAppView(screenName = "screenName", screenNameBuilder = ScreenNameBuilder.class)
+    @SendScreenView(screenName = "screenName", screenNameBuilder = ScreenNameBuilder.class)
     void screenNameWithBuilders() {
     }
 

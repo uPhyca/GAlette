@@ -24,5 +24,5 @@ public enum Fields {
     CATEGORY,
     ACTION,
     LABEL,
-    VALUE;
+    VALUE
 }
