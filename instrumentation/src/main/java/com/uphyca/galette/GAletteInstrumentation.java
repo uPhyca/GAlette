@@ -333,7 +333,7 @@ public class GAletteInstrumentation {
      * Process the file
      */
     public void processFile(File classFile) throws Exception {
-        if (classFile.isDirectory()) {
+        if (!classFile.isFile()) {
             throw new IllegalArgumentException(classFile + " is not a file");
         }
         InputStream in = null;
