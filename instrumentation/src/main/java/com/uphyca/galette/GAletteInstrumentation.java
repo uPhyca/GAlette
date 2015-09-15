@@ -258,7 +258,7 @@ public class GAletteInstrumentation {
         }
 
         /**
-         * Push type to statck
+         * Push type to stack
          */
         private void pushClassObject(Type type) {
             switch (type.getSort()) {
@@ -333,8 +333,8 @@ public class GAletteInstrumentation {
      * Process the file
      */
     public void processFile(File classFile) throws Exception {
-        if (classFile.isDirectory()) {
-            throw new IllegalArgumentException(classFile + " is not a directory");
+        if (!classFile.isFile()) {
+            throw new IllegalArgumentException(classFile + " is not a file");
         }
         InputStream in = null;
         try {
@@ -407,7 +407,7 @@ public class GAletteInstrumentation {
         final GAletteInstrumentation inst = new GAletteInstrumentation();
         File f = new File(args[0]);
         if (!f.exists()) {
-            throw new IllegalArgumentException(f + " does not exists");
+            throw new IllegalArgumentException(f + " does not exist");
         }
         inst.processFiles(f);
     }
