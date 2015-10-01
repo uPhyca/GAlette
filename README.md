@@ -174,7 +174,7 @@ public class MainActivity extends Activity {
 
 ### Interceptor
 
-Use HitInterceptor to send arbitary values
+Use HitInterceptor to send arbitrary values
 
 ```java
 public class MyApplication extends Application implements TrackerProvider, HitInterceptor.Provider {
