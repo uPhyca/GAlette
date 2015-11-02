@@ -42,35 +42,17 @@ public interface HitInterceptor {
         T addImpression(Product product, String impressionList);
     }
 
-    /**
-     * @see com.google.android.gms.analytics.HitBuilders.ScreenViewBuilder
-     */
     interface ScreenViewFacade extends HitFacade<ScreenViewFacade> {
     }
 
-    /**
-     * @see com.google.android.gms.analytics.HitBuilders.EventBuilder
-     */
     interface EventFacade extends HitFacade<EventFacade> {
 
-        /**
-         * @see com.google.android.gms.analytics.HitBuilders.EventBuilder#setCategory(String)
-         */
         EventFacade setCategory(String category);
 
-        /**
-         * @see com.google.android.gms.analytics.HitBuilders.EventBuilder#setLabel(String)
-         */
         EventFacade setLabel(String label);
 
-        /**
-         * @see com.google.android.gms.analytics.HitBuilders.EventBuilder#setAction(String)
-         */
         EventFacade setAction(String action);
 
-        /**
-         * @see com.google.android.gms.analytics.HitBuilders.EventBuilder#setValue(long)
-         */
         EventFacade setValue(long value);
     }
 
@@ -78,7 +60,6 @@ public interface HitInterceptor {
      * Intercept event.
      *
      * @param event
-     * @see com.google.android.gms.analytics.HitBuilders.EventBuilder
      */
     void onEvent(EventFacade event);
 
@@ -86,7 +67,6 @@ public interface HitInterceptor {
      * Intercept screen view.
      *
      * @param screenView
-     * @see com.google.android.gms.analytics.HitBuilders.ScreenViewBuilder
      */
     void onScreenView(ScreenViewFacade screenView);
 }
