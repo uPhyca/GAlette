@@ -17,7 +17,7 @@ task wrapper(type: Wrapper) {
 
 apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.application'
-apply plugin: 'galette'
+apply plugin: 'com.uphyca.galette'
 
 repositories {
     jcenter()

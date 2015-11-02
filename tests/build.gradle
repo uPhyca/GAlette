@@ -17,7 +17,7 @@ task wrapper(type: Wrapper) {
 
 apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.library'
-apply plugin: 'galette'
+apply plugin: 'com.uphyca.galette'
 
 def isWercker = "true".equals(System.getenv("WERCKER"))
 def preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))

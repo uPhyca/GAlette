@@ -39,7 +39,7 @@ buildscript {
 }
 
 ...
-apply plugin: 'galette'
+apply plugin: 'com.uphyca.galette'
 ```
 
 
