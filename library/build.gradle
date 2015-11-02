@@ -58,4 +58,8 @@ task install(type: Exec, dependsOn: assemble) {
 }
 
 apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
-//apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/44a1e74d01afd31ae1b78e6d85d1ab992295bb82/gradle-mvn-push.gradle'
+// taken from https://github.com/chrisbanes/gradle-mvn-push/issues/39
+afterEvaluate { project ->
+    androidJavadocs.classpath += project.android.libraryVariants.toList().first().javaCompile.classpath
+}
+
