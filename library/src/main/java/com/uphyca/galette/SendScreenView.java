@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * @see com.google.android.gms.analytics.HitBuilders.ScreenViewBuilder
+ * <a href="https://developers.google.com/analytics/devguides/collection/android/v4/screens">Screens - Android SDK v4  _  Analytics for Android  _  Google Developers</a>
  */
 @Target(ElementType.METHOD)
 @Retention(RUNTIME)
@@ -31,6 +31,9 @@ public @interface SendScreenView {
 
     String trackerName() default "";
 
+    /**
+     * The name of an application screen.
+     */
     String screenName() default "";
 
     Class<? extends FieldBuilder<String>> screenNameBuilder() default StringFieldBuilder.class;

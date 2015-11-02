@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * @see com.google.android.gms.analytics.HitBuilders.EventBuilder
+ * <a href="https://developers.google.com/analytics/devguides/collection/android/v4/events">Event Tracking - Android SDK v4  _  Analytics for Android  _  Google Developers</a>
  */
 @Target(ElementType.METHOD)
 @Retention(RUNTIME)
@@ -31,12 +31,24 @@ public @interface SendEvent {
 
     String trackerName() default "";
 
+    /**
+     * The event category
+     */
     String category() default "";
 
+    /**
+     * The event action
+     */
     String action() default "";
 
+    /**
+     * The event label
+     */
     String label() default "";
 
+    /**
+     * The event value
+     */
     long value() default Long.MIN_VALUE;
 
     Class<? extends FieldBuilder<String>> categoryBuilder() default StringFieldBuilder.class;
