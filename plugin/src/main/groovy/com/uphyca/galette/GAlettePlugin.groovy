@@ -34,8 +34,7 @@ class GAlettePlugin implements Plugin<Project> {
         }
 
         variants.all { variant ->
-            JavaCompile javaCompile = variant.javaCompile
-
+            JavaCompile javaCompile = variant.hasProperty('javaCompiler') ? variant.javaCompiler : variant.javaCompile
             javaCompile.doLast {
                 def classpath = project.files()
 
