@@ -28,7 +28,7 @@ class GAlettePlugin implements Plugin<Project> {
         def galetteVersion = getPluginVersion(project, "com.uphyca.galette", "galette-plugin")
 
         project.dependencies {
-            compile 'com.google.android.gms:play-services-analytics:7.5.0'
+            compile 'com.google.android.gms:play-services-analytics:8.1.0'
             compile "com.uphyca.galette:galette:${galetteVersion}"
             galette "com.uphyca.galette:galette-instrumentation:${galetteVersion}"
         }
