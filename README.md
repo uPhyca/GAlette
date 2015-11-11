@@ -34,7 +34,7 @@ buildscript {
     }
     dependencies {
         ...
-        classpath 'com.uphyca.galette:galette-plugin:0.9.12'
+        classpath 'com.uphyca.galette:galette-plugin:0.9.13'
     }
 }
 
@@ -246,6 +246,19 @@ public class MyClass implements ContextProvider {
     }
 }
 ```
+
+
+## Specify Google Play Services version
+
+```
+configurations.all {
+    resolutionStrategy {
+        force "com.google.android.gms:play-services-analytics:${playservicesVersion}"
+    }
+}
+```
+
+See more details [ResolutionStrategy - Gradle DSL Version 2.8](https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.ResolutionStrategy.html)
 
 
 ## Proguard
