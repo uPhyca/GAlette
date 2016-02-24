@@ -4,6 +4,17 @@ build:
   # The steps that will be executed on build
   steps:
     - script:
+        # Taken from https://github.com/wercker/box-android/blob/master/install-sdk.sh
+        name: install android sdk
+        code: |
+          export ANDROID_SDK_VERSION="24.4.1"
+          wget "http://dl.google.com/android/android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz"
+          tar xzf "android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz"
+          rm "android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz"
+          export ANDROID_HOME=${PWD}/android-sdk-linux
+          export PATH="${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${PATH}"
+          type android || { echo "Path: $PATH"; echo 'Android not availble after installation, terminating.'; exit 1; }
+    - script:
         name: show base information
         code: |
           ./gradlew -v
@@ -13,17 +24,17 @@ build:
           echo $ANDROID_UPDATE_FILTER
           echo $ANDROID_NDK_HOME
     - android-sdk-update:
-        filter: platform-tools,build-tools-22.0.1,android-22,sysimg-22,extra-android-m2repository,extra-google-m2repository
+        filter: platform-tools,build-tools-23.0.2,android-23,sys-img-armeabi-v7a-android-23,extra-android-m2repository,extra-google-m2repository
     - script:
         name: build and install
         code: |
           ./gradlew --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR build install
     - setup-android-emulator:
-        target: android-22
+        target: android-23
     - script:
         name: connectedCheck
         code: |
-          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest
+          ./gradlew --full-stacktrace --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest
 after-steps:
     # Use the build results
     - script:
