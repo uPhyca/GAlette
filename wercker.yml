@@ -24,7 +24,7 @@ build:
           echo $ANDROID_UPDATE_FILTER
           echo $ANDROID_NDK_HOME
     - android-sdk-update:
-        filter: platform-tools,build-tools-23.0.2,android-23,sysimg-23,extra-android-m2repository,extra-google-m2repository
+        filter: platform-tools,build-tools-23.0.2,android-23,sys-img-armeabi-v7a-android-23,extra-android-m2repository,extra-google-m2repository
     - script:
         name: build and install
         code: |
