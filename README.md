@@ -34,7 +34,7 @@ buildscript {
     }
     dependencies {
         ...
-        classpath 'com.uphyca.galette:galette-plugin:0.9.14'
+        classpath 'com.uphyca.galette:galette-plugin:0.9.15'
     }
 }
 
