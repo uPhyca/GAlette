@@ -34,7 +34,7 @@ build:
     - script:
         name: connectedCheck
         code: |
-          ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest
+          ./gradlew --full-stacktrace --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest
 after-steps:
     # Use the build results
     - script:
