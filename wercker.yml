@@ -4,15 +4,6 @@ build:
   # The steps that will be executed on build
   steps:
     - script:
-        name: show base information
-        code: |
-          ./gradlew -v
-          echo $ANDROID_HOME
-          echo $ANDROID_SDK_VERSION
-          echo $ANDROID_BUILD_TOOLS
-          echo $ANDROID_UPDATE_FILTER
-          echo $ANDROID_NDK_HOME
-    - script:
         # Taken from https://github.com/wercker/box-android/blob/master/install-sdk.sh
         name: install android sdk
         code: |
@@ -21,8 +12,17 @@ build:
           tar xzf "android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz"
           rm "android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz"
           export ANDROID_HOME=${PWD}/android-sdk-linux
-          export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools"
+          export PATH="${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${PATH}"
           type android || { echo "Path: $PATH"; echo 'Android not availble after installation, terminating.'; exit 1; }
+    - script:
+        name: show base information
+        code: |
+          ./gradlew -v
+          echo $ANDROID_HOME
+          echo $ANDROID_SDK_VERSION
+          echo $ANDROID_BUILD_TOOLS
+          echo $ANDROID_UPDATE_FILTER
+          echo $ANDROID_NDK_HOME
     - android-sdk-update:
         filter: platform-tools,build-tools-23.0.2,android-23,sysimg-23,extra-android-m2repository,extra-google-m2repository
     - script:
