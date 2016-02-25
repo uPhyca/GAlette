@@ -2,7 +2,7 @@ Change Log
 ==========
 
 Version 0.9.15 *(2016-02-24)*
- ----------------------------  
+----------------------------
 
 - Fix bugs 
   - Build error with "Unsupported major.minor version 52.0" on Java 1.7  
