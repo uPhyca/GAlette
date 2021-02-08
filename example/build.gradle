@@ -11,10 +11,6 @@ buildscript {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.8'
-}
-
 apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.application'
 apply plugin: 'com.uphyca.galette'
@@ -56,4 +52,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+}
+
+wrapper {
+    gradleVersion = '6.8.2'
+    distributionType = Wrapper.DistributionType.ALL
 }

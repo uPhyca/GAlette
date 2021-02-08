@@ -11,10 +11,6 @@ buildscript {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.8'
-}
-
 apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.library'
 apply plugin: 'com.uphyca.galette'
@@ -58,3 +54,7 @@ dependencies {
     androidTestCompile "com.squareup:fest-android:1.0.8@aar"
 }
 
+wrapper {
+    gradleVersion = '6.8.2'
+    distributionType = Wrapper.DistributionType.ALL
+}

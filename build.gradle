@@ -25,10 +25,6 @@ allprojects {
     apply plugin: 'maven'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.8'
-}
-
 task cleanExample(type: Exec) {
     executable = './gradlew'
     workingDir = project.file('example')
@@ -63,4 +59,9 @@ task connectedAndroidTest(type: Exec) {
     executable = './gradlew'
     workingDir = project.file('tests')
     args = [ 'connectedAndroidTest' ]
+}
+
+wrapper {
+    gradleVersion = '6.8.2'
+    distributionType = Wrapper.DistributionType.ALL
 }
