@@ -12,7 +12,7 @@ class GAlettePlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         final def variants
-        final def plugin
+        def plugin
         if (project.plugins.hasPlugin(AppPlugin)) {
             variants = project.android.applicationVariants
             plugin = project.plugins.getPlugin(AppPlugin)
@@ -25,12 +25,23 @@ class GAlettePlugin implements Plugin<Project> {
 
         project.configurations.create('galette')
 
+        def analyticsVersion = '9.2.1'
         def galetteVersion = getPluginVersion(project, "com.uphyca.galette", "galette-plugin")
+        def agpVersion = getPluginVersion(project, "com.android.tools.build", "gradle")
+        def agpMajorVersion = Integer.parseInt(agpVersion.split("\\.")[0])
 
-        project.dependencies {
-            compile 'com.google.android.gms:play-services-analytics:9.2.1'
-            compile "com.uphyca.galette:galette:${galetteVersion}"
-            galette "com.uphyca.galette:galette-instrumentation:${galetteVersion}"
+        if (5 <= agpMajorVersion) {
+            project.dependencies {
+                implementation "com.google.android.gms:play-services-analytics:${analyticsVersion}"
+                implementation "com.uphyca.galette:galette:${galetteVersion}"
+                galette "com.uphyca.galette:galette-instrumentation:${galetteVersion}"
+            }
+        } else {
+            project.dependencies {
+                compile "com.google.android.gms:play-services-analytics:${analyticsVersion}"
+                compile "com.uphyca.galette:galette:${galetteVersion}"
+                galette "com.uphyca.galette:galette-instrumentation:${galetteVersion}"
+            }
         }
 
         variants.all { variant ->
