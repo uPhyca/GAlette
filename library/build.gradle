@@ -33,6 +33,7 @@ android {
     defaultConfig {
         targetSdkVersion 22
         minSdkVersion 9
+        consumerProguardFiles file('consumer-rules.pro')
     }
 
     compileOptions {

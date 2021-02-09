@@ -266,21 +266,11 @@ See more details [ResolutionStrategy - Gradle DSL Version 2.8](https://docs.grad
 
 ## Proguard
 
-```
--keepclassmembernames class * {
-    @com.uphyca.galette.SendScreenView *;
-    @com.uphyca.galette.SendEvent *;
-}
-
--keepclassmembers class * implements com.uphyca.galette.FieldBuilder {
-   <init>();
-}
-```
-
+Proguard configuration is automatically applied.
 
 # License
 
-    Copyright 2014 uPhyca, Inc.
+    Copyright 2014-2021 uPhyca Inc.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
