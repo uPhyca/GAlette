@@ -22,7 +22,7 @@ def isWercker = "true".equals(System.getenv("WERCKER"))
 def preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     dexOptions {
@@ -32,7 +32,7 @@ android {
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 22
+        targetSdkVersion 30
         versionCode 1
     }
 
