@@ -37,6 +37,7 @@ class GAlettePlugin implements Plugin<Project> {
                 galette "com.uphyca.galette:galette-instrumentation:${galetteVersion}"
             }
         } else {
+            // 以前のバージョンとの互換のため compile を使用
             project.dependencies {
                 compile "com.google.android.gms:play-services-analytics:${analyticsVersion}"
                 compile "com.uphyca.galette:galette:${galetteVersion}"
