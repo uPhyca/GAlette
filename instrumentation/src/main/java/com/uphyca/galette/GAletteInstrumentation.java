@@ -300,7 +300,7 @@ public class GAletteInstrumentation {
         }
 
         /**
-         * Push integer to statck
+         * Push integer to stack
          */
         private void pushInt(int i) {
             if (i <= 5) {
